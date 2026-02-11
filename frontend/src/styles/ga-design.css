@@ -1,0 +1,408 @@
+/* -------------------------------------------------------------------------
+   GA風モダンなダッシュボードデザイン - 共通スタイル
+   design.protocol.json 準拠（色・タイポ・余白）
+   全画面で使用する共通パターン
+   ------------------------------------------------------------------------- */
+
+:root {
+  /* カラーシステム */
+  --ga-bg: #F8F9FA;
+  --ga-text: #202124;
+  --ga-text-secondary: #5F6368;
+  --ga-text-disabled: #9AA0A6;
+  --ga-brand: #1A73E8;
+  --ga-brand-hover: #1558B0;
+  --ga-brand-light: #E8F0FE;
+  --ga-card-bg: #FFFFFF;
+  --ga-card-border: #E0E0E0;
+  --ga-card-shadow: 0px 1px 2px rgba(0, 0, 0, 0.05);
+  --ga-table-header: #F8F9FA;
+  --ga-table-hover: #F1F3F4;
+  
+  /* スペーシング */
+  --ga-space-xs: 4px;
+  --ga-space-sm: 8px;
+  --ga-space-md: 16px;
+  --ga-space-lg: 24px;
+  --ga-space-xl: 32px;
+  
+  /* 角丸 */
+  --ga-radius: 12px;
+  --ga-radius-sm: 8px;
+  
+  /* トランジション */
+  --ga-transition: all 0.2s ease-in-out;
+  --ga-focus-ring: 0 0 0 3px rgba(26, 115, 232, 0.3);
+}
+
+/* ===== ページヘッダー ===== */
+.ga-page-header {
+  margin-bottom: var(--ga-space-lg);
+}
+
+.ga-page-title {
+  margin: 0 0 var(--ga-space-xs);
+  font-size: 24px;
+  font-weight: 600;
+  line-height: 1.3;
+  color: var(--ga-text);
+  font-family: 'Roboto', 'Noto Sans JP', sans-serif;
+}
+
+.ga-page-subtitle {
+  margin: 0;
+  font-size: 14px;
+  font-weight: 400;
+  line-height: 1.5;
+  color: var(--ga-text-secondary);
+  font-family: 'Roboto', 'Noto Sans JP', sans-serif;
+}
+
+/* ===== 情報バナー ===== */
+.ga-info-banner {
+  display: flex;
+  align-items: flex-start;
+  gap: 12px;
+  padding: var(--ga-space-md) var(--ga-space-lg);
+  margin-bottom: var(--ga-space-lg);
+  background: var(--ga-brand-light);
+  border-radius: var(--ga-radius);
+  font-size: 14px;
+  line-height: 1.5;
+  font-family: 'Roboto', 'Noto Sans JP', sans-serif;
+}
+
+.ga-info-banner-icon {
+  flex-shrink: 0;
+  color: var(--ga-brand);
+}
+
+.ga-info-banner-title {
+  font-weight: 600;
+  color: var(--ga-text);
+}
+
+.ga-info-banner-desc {
+  color: var(--ga-text-secondary);
+}
+
+/* ===== カード ===== */
+.ga-card {
+  background: var(--ga-card-bg);
+  border: 1px solid var(--ga-card-border);
+  border-radius: var(--ga-radius);
+  box-shadow: var(--ga-card-shadow);
+  overflow: hidden;
+  margin-bottom: var(--ga-space-lg);
+}
+
+.ga-card-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  flex-wrap: wrap;
+  gap: var(--ga-space-sm);
+  padding: var(--ga-space-lg);
+  padding-bottom: var(--ga-space-md);
+}
+
+.ga-card-title {
+  margin: 0;
+  font-size: 20px;
+  font-weight: 600;
+  line-height: 1.3;
+  color: var(--ga-text);
+  font-family: 'Roboto', 'Noto Sans JP', sans-serif;
+}
+
+.ga-card-meta {
+  font-size: 12px;
+  font-weight: 400;
+  color: var(--ga-text-secondary);
+  font-family: 'Roboto', 'Noto Sans JP', sans-serif;
+}
+
+.ga-card-body {
+  padding: 0;
+}
+
+.ga-card-body-padded {
+  padding: var(--ga-space-lg);
+}
+
+/* ===== 統計カード（メトリック） ===== */
+.ga-metric-card {
+  background: var(--ga-card-bg);
+  border: 1px solid var(--ga-card-border);
+  border-radius: var(--ga-radius);
+  box-shadow: var(--ga-card-shadow);
+  padding: var(--ga-space-lg);
+  min-height: 120px;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+}
+
+.ga-metric-value {
+  font-size: 28px;
+  font-weight: 600;
+  line-height: 1.3;
+  color: var(--ga-brand);
+  font-family: 'Roboto', 'Noto Sans JP', sans-serif;
+  margin-bottom: var(--ga-space-xs);
+}
+
+.ga-metric-label {
+  font-size: 12px;
+  font-weight: 400;
+  color: var(--ga-text-secondary);
+  font-family: 'Roboto', 'Noto Sans JP', sans-serif;
+}
+
+/* ===== ツールバー（検索・フィルタ・メタ情報） ===== */
+.ga-toolbar {
+  display: flex;
+  align-items: center;
+  gap: var(--ga-space-md);
+  margin-bottom: var(--ga-space-md);
+  flex-wrap: wrap;
+}
+
+.ga-toolbar-search {
+  display: flex;
+  align-items: center;
+  gap: var(--ga-space-sm);
+  flex: 1;
+  min-width: 200px;
+  max-width: 400px;
+  height: 40px;
+  padding: 0 12px;
+  background: var(--ga-card-bg);
+  border: 1px solid var(--ga-card-border);
+  border-radius: var(--ga-radius-sm);
+  transition: var(--ga-transition);
+}
+
+.ga-toolbar-search:focus-within {
+  border-color: var(--ga-brand);
+  box-shadow: var(--ga-focus-ring);
+}
+
+.ga-toolbar-search-icon {
+  flex-shrink: 0;
+  color: var(--ga-text-disabled);
+}
+
+.ga-toolbar-search-input {
+  flex: 1;
+  min-width: 0;
+  padding: 0;
+  border: none;
+  outline: none;
+  background: transparent;
+  font-size: 14px;
+  font-weight: 400;
+  line-height: 1.5;
+  color: var(--ga-text);
+  font-family: 'Roboto', 'Noto Sans JP', sans-serif;
+}
+
+.ga-toolbar-search-input::placeholder {
+  color: var(--ga-text-disabled);
+}
+
+.ga-toolbar-search-clear {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  min-width: 32px;
+  min-height: 32px;
+  padding: 0;
+  border: none;
+  background: transparent;
+  color: var(--ga-text-disabled);
+  cursor: pointer;
+  border-radius: var(--ga-space-xs);
+  transition: var(--ga-transition);
+}
+
+.ga-toolbar-search-clear:hover {
+  color: var(--ga-text);
+  background: var(--ga-table-hover);
+}
+
+.ga-toolbar-meta {
+  font-size: 13px;
+  color: var(--ga-text-secondary);
+  line-height: 40px;
+  flex-shrink: 0;
+  font-family: 'Roboto', 'Noto Sans JP', sans-serif;
+}
+
+/* ===== テーブル風リスト ===== */
+.ga-list-row {
+  border-bottom: 1px solid var(--ga-card-border);
+}
+
+.ga-list-row:last-child {
+  border-bottom: none;
+}
+
+.ga-list-cell {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  width: 100%;
+  min-height: 48px;
+  padding: var(--ga-space-md) var(--ga-space-lg);
+  border: none;
+  background: transparent;
+  font-family: 'Roboto', 'Noto Sans JP', sans-serif;
+  font-size: 14px;
+  font-weight: 500;
+  line-height: 1.5;
+  color: var(--ga-text);
+  text-align: left;
+  cursor: pointer;
+  transition: var(--ga-transition);
+}
+
+.ga-list-cell:hover {
+  background: var(--ga-table-hover);
+}
+
+.ga-list-cell:focus-visible {
+  outline: none;
+  box-shadow: inset var(--ga-focus-ring);
+}
+
+/* ===== 空状態 ===== */
+.ga-empty {
+  padding: var(--ga-space-xl) var(--ga-space-lg);
+  text-align: center;
+}
+
+.ga-empty-icon {
+  color: var(--ga-text-disabled);
+  margin-bottom: var(--ga-space-md);
+}
+
+.ga-empty-text {
+  margin: 0 0 var(--ga-space-xs);
+  font-size: 14px;
+  font-weight: 600;
+  color: var(--ga-text);
+  font-family: 'Roboto', 'Noto Sans JP', sans-serif;
+}
+
+.ga-empty-hint {
+  margin: 0;
+  font-size: 14px;
+  font-weight: 400;
+  line-height: 1.5;
+  color: var(--ga-text-secondary);
+  font-family: 'Roboto', 'Noto Sans JP', sans-serif;
+}
+
+/* ===== ボタン ===== */
+.ga-btn-primary {
+  background: var(--ga-brand) !important;
+  color: #FFFFFF !important;
+  font-weight: 500 !important;
+  font-size: 14px !important;
+  padding: 10px 20px !important;
+  min-height: 40px !important;
+  border-radius: var(--ga-radius-sm) !important;
+  box-shadow: 0 1px 2px rgba(26, 115, 232, 0.2) !important;
+  transition: var(--ga-transition) !important;
+  text-transform: none !important;
+  letter-spacing: 0 !important;
+}
+
+.ga-btn-primary:hover {
+  background: var(--ga-brand-hover) !important;
+  box-shadow: 0 2px 4px rgba(26, 115, 232, 0.3) !important;
+}
+
+.ga-btn-primary:focus-visible {
+  outline: none !important;
+  box-shadow: var(--ga-focus-ring) !important;
+}
+
+.ga-btn-primary:disabled {
+  background: var(--ga-text-disabled) !important;
+  color: #FFFFFF !important;
+  opacity: 0.6 !important;
+}
+
+.ga-btn-secondary {
+  background: var(--ga-card-bg) !important;
+  color: var(--ga-brand) !important;
+  font-weight: 500 !important;
+  font-size: 14px !important;
+  padding: 8px 16px !important;
+  min-height: 36px !important;
+  border: 1px solid var(--ga-card-border) !important;
+  border-radius: var(--ga-radius-sm) !important;
+  transition: var(--ga-transition) !important;
+  text-transform: none !important;
+  letter-spacing: 0 !important;
+}
+
+.ga-btn-secondary:hover {
+  background: var(--ga-brand-light) !important;
+  border-color: var(--ga-brand) !important;
+}
+
+.ga-btn-secondary:focus-visible {
+  outline: none !important;
+  box-shadow: var(--ga-focus-ring) !important;
+}
+
+.ga-btn-text {
+  color: var(--ga-brand) !important;
+  font-weight: 500 !important;
+  font-size: 14px !important;
+  padding: 6px 12px !important;
+  min-height: 32px !important;
+  border-radius: var(--ga-radius-sm) !important;
+  transition: var(--ga-transition) !important;
+  text-transform: none !important;
+  letter-spacing: 0 !important;
+}
+
+.ga-btn-text:hover {
+  background: var(--ga-brand-light) !important;
+  color: var(--ga-brand-hover) !important;
+}
+
+.ga-btn-text:focus-visible {
+  outline: none !important;
+  box-shadow: var(--ga-focus-ring) !important;
+}
+
+/* Vuetifyボタンのオーバーライド */
+.ga-btn-primary :deep(.v-btn__content),
+.ga-btn-secondary :deep(.v-btn__content),
+.ga-btn-text :deep(.v-btn__content) {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--ga-space-xs);
+}
+
+/* ===== レスポンシブ ===== */
+@media (max-width: 599px) {
+  .ga-card-header,
+  .ga-list-cell {
+    padding-left: var(--ga-space-md);
+    padding-right: var(--ga-space-md);
+  }
+  
+  .ga-info-banner {
+    padding: var(--ga-space-md);
+  }
+  
+  .ga-btn-primary {
+    width: 100%;
+  }
+}

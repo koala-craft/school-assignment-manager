@@ -1,0 +1,90 @@
+@import "tailwindcss";
+
+@theme {
+  --font-sans: 'Roboto', sans-serif;
+}
+
+@layer base {
+  :root {
+    --app-bar-height: 56px;
+    --drawer-width: 280px;
+    --content-radius: 12px;
+    --card-radius: 12px;
+  }
+  html {
+    scroll-behavior: smooth;
+  }
+  body {
+    @apply m-0 font-sans antialiased;
+    background-color: #f1f5f9;
+    color: #1e293b;
+  }
+}
+
+@layer components {
+  .page-title {
+    @apply text-2xl font-semibold text-slate-800 mb-6;
+  }
+  .card-modern {
+    @apply rounded-xl border border-slate-200/80 bg-white shadow-sm;
+  }
+
+  /* 余白ルール（ダッシュボード・一覧・詳細画面で共通利用） */
+  .content-page {
+    padding: 0.5rem 0 2rem;
+  }
+  .content-page-title {
+    margin: 0 0 1.75rem;
+    font-size: 1.5rem;
+    font-weight: 700;
+    color: #0f172a;
+    letter-spacing: 0.02em;
+  }
+  .content-row {
+    margin-bottom: 1.75rem;
+  }
+  .content-row:last-child {
+    margin-bottom: 0;
+  }
+  .content-col {
+    padding: 0.375rem;
+    box-sizing: border-box;
+  }
+  .content-card {
+    border-radius: 16px;
+    border: 1px solid rgba(255, 255, 255, 0.85);
+    box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.06), 0 10px 24px -4px rgba(0, 0, 0, 0.08);
+    background: rgba(255, 255, 255, 0.98);
+    transition: box-shadow 0.2s ease;
+    height: 100%;
+  }
+  .content-card:hover {
+    box-shadow: 0 8px 24px rgba(0, 0, 0, 0.08);
+  }
+  .content-card-intro {
+    height: auto;
+  }
+  .content-card-title {
+    font-size: 1rem !important;
+    font-weight: 600 !important;
+    color: #0f172a;
+    padding: 1rem 1.25rem 0.75rem !important;
+  }
+  .content-card .v-card-text {
+    padding: 0 1.25rem 1.25rem !important;
+  }
+  .content-card .v-list-item {
+    padding-inline: 0.5rem;
+    min-height: 48px;
+  }
+  .content-alert {
+    border-radius: 12px;
+    margin-bottom: 1.5rem;
+  }
+  .content-actions {
+    margin-top: 0.25rem;
+  }
+  .content-actions .content-col {
+    padding: 0.375rem 0;
+  }
+}
