@@ -1,17 +1,47 @@
 <template>
-  <div class="content-page">
-    <h1 class="content-page-title">{{ assignment?.title }}</h1>
-    <v-alert v-if="loadError" type="error" density="compact" class="content-alert" closable>
+  <div class="ga-page">
+    <!-- GA風：ページヘッダー -->
+    <header class="ga-page-header">
+      <h1 class="ga-page-title">
+        {{ assignment?.title || '課題詳細' }}
+      </h1>
+      <p class="ga-page-subtitle">
+        課題の内容と締切、提出状況を確認し、必要に応じてコメントを添えて提出します。
+      </p>
+    </header>
+
+    <v-alert
+      v-if="loadError"
+      type="error"
+      density="compact"
+      class="ga-alert"
+      closable
+    >
       {{ loadError }}
     </v-alert>
-    <v-card v-if="assignment" class="content-card">
+
+    <v-card v-if="assignment" class="ga-card" elevation="0">
       <v-card-text>
-        <p>{{ assignment.description || '説明なし' }}</p>
-        <p>締切: {{ formatDate(assignment.deadline) }}</p>
-        <p v-if="submission">状態: {{ submission.status }}</p>
-        <v-form v-if="!submission || submission.status === 'not_submitted'" @submit.prevent="handleSubmit">
-          <v-textarea v-model="form.content" label="コメント" variant="outlined" />
-          <div style="display: flex; justify-content: flex-end; gap: var(--ga-space-md); margin-top: var(--ga-space-lg); padding-top: var(--ga-space-md); border-top: 1px solid var(--ga-card-border);">
+        <p class="ga-assignment-desc">
+          {{ assignment.description || '説明なし' }}
+        </p>
+        <p class="ga-assignment-deadline">
+          締切: {{ formatDate(assignment.deadline) }}
+        </p>
+        <p v-if="submission" class="ga-assignment-status">
+          状態: {{ submission.status }}
+        </p>
+
+        <v-form
+          v-if="!submission || submission.status === 'not_submitted'"
+          @submit.prevent="handleSubmit"
+        >
+          <v-textarea
+            v-model="form.content"
+            label="コメント"
+            variant="outlined"
+          />
+          <div class="ga-assignment-actions">
             <v-btn
               color="primary"
               :loading="loading"
@@ -73,3 +103,33 @@ async function handleSubmit() {
   }
 }
 </script>
+
+<style scoped>
+.ga-page {
+  min-height: 100%;
+  padding-bottom: var(--ga-space-xl);
+}
+
+.ga-alert {
+  margin-bottom: var(--ga-space-md);
+}
+
+.ga-assignment-desc {
+  margin-bottom: 8px;
+}
+
+.ga-assignment-deadline,
+.ga-assignment-status {
+  margin: 0 0 4px;
+  font-size: 14px;
+}
+
+.ga-assignment-actions {
+  display: flex;
+  justify-content: flex-end;
+  gap: var(--ga-space-md);
+  margin-top: var(--ga-space-lg);
+  padding-top: var(--ga-space-md);
+  border-top: 1px solid var(--ga-card-border);
+}
+</style>

@@ -1,15 +1,34 @@
 <template>
-  <div class="content-page">
-    <h1 class="content-page-title">採点</h1>
-    <v-card class="content-card">
+  <div class="ga-page">
+    <!-- GA風：ページヘッダー -->
+    <header class="ga-page-header">
+      <h1 class="ga-page-title">採点</h1>
+      <p class="ga-page-subtitle">
+        担当科目の未採点提出一覧です。学生名または課題名をクリックして詳細画面から採点を行います。
+      </p>
+    </header>
+
+    <v-card class="ga-card" elevation="0">
       <v-card-text>
         <v-list v-if="items.length">
-          <v-list-item v-for="s in items" :key="s.id" :to="`/submissions/${s.id}`">
-            <v-list-item-title>{{ s.student?.name }} - {{ s.assignment?.title }}</v-list-item-title>
-            <v-list-item-subtitle>{{ s.status }}</v-list-item-subtitle>
+          <v-list-item
+            v-for="s in items"
+            :key="s.id"
+            :to="`/submissions/${s.id}`"
+            class="ga-list-row"
+          >
+            <v-list-item-title>
+              {{ s.student?.name }} - {{ s.assignment?.title }}
+            </v-list-item-title>
+            <v-list-item-subtitle>
+              {{ s.status }}
+            </v-list-item-subtitle>
           </v-list-item>
         </v-list>
-        <p v-else class="text-grey">未採点の提出はありません</p>
+        <div v-else class="ga-empty">
+          <v-icon size="40" class="ga-empty-icon">mdi-information-outline</v-icon>
+          <p class="ga-empty-text">未採点の提出はありません</p>
+        </div>
       </v-card-text>
     </v-card>
   </div>
@@ -41,3 +60,18 @@ onMounted(async () => {
   }
 })
 </script>
+
+<style scoped>
+.ga-page {
+  min-height: 100%;
+  padding-bottom: var(--ga-space-xl);
+}
+
+.ga-card {
+  margin-bottom: var(--ga-space-lg);
+}
+
+.ga-list-row {
+  border-radius: 0;
+}
+</style>

@@ -1,36 +1,79 @@
 <template>
-  <div class="content-page">
-    <h1 class="content-page-title">監査ログ</h1>
-    <v-alert v-if="loadError" type="error" density="compact" class="content-alert" closable>
+  <div class="ga-page">
+    <!-- GA風：ページヘッダー -->
+    <header class="ga-page-header">
+      <h1 class="ga-page-title">監査ログ</h1>
+      <p class="ga-page-subtitle">
+        ユーザーの操作履歴を確認できます。フィルタでユーザーやアクション、期間を絞り込んでください。
+      </p>
+    </header>
+
+    <v-alert
+      v-if="loadError"
+      type="error"
+      density="compact"
+      class="ga-alert"
+      closable
+    >
       {{ loadError }}
     </v-alert>
-    <v-card class="content-card">
+
+    <v-card class="ga-card" elevation="0">
       <v-card-text>
-        <v-row class="mb-4">
+        <!-- フィルタツールバー -->
+        <v-row class="ga-filters" dense>
           <v-col cols="12" md="3">
-            <v-text-field v-model="filters.user_id" label="ユーザーID" variant="outlined" density="compact" hide-details />
+            <v-text-field
+              v-model="filters.user_id"
+              label="ユーザーID"
+              variant="outlined"
+              density="compact"
+              hide-details
+            />
           </v-col>
           <v-col cols="12" md="3">
-            <v-text-field v-model="filters.action" label="アクション" variant="outlined" density="compact" hide-details />
+            <v-text-field
+              v-model="filters.action"
+              label="アクション"
+              variant="outlined"
+              density="compact"
+              hide-details
+            />
           </v-col>
           <v-col cols="12" md="2">
-            <v-text-field v-model="filters.date_from" label="日付From" type="date" variant="outlined" density="compact" hide-details />
+            <v-text-field
+              v-model="filters.date_from"
+              label="日付From"
+              type="date"
+              variant="outlined"
+              density="compact"
+              hide-details
+            />
           </v-col>
           <v-col cols="12" md="2">
-            <v-text-field v-model="filters.date_to" label="日付To" type="date" variant="outlined" density="compact" hide-details />
+            <v-text-field
+              v-model="filters.date_to"
+              label="日付To"
+              type="date"
+              variant="outlined"
+              density="compact"
+              hide-details
+            />
           </v-col>
-          <v-col cols="12" md="2">
+          <v-col cols="12" md="2" class="ga-filters-actions">
             <v-btn
               color="primary"
               @click="load"
-              class="ga-btn-primary"
+              class="ga-btn-secondary"
               prepend-icon="mdi-magnify"
             >
               検索
             </v-btn>
           </v-col>
         </v-row>
-        <v-table>
+
+        <!-- 一覧テーブル -->
+        <v-table class="ga-table">
           <thead>
             <tr>
               <th>ID</th>
@@ -48,9 +91,26 @@
               <td>{{ l.user?.name || l.user_name || '-' }}</td>
               <td>{{ formatDate(l.created_at) }}</td>
             </tr>
+            <tr v-if="!items.length">
+              <td colspan="5" class="ga-table-empty-cell">
+                <div class="ga-empty">
+                  <v-icon size="32" class="ga-empty-icon">mdi-file-search-outline</v-icon>
+                  <p class="ga-empty-text">該当するログがありません</p>
+                  <p class="ga-empty-hint">フィルタ条件を変更して再度お試しください。</p>
+                </div>
+              </td>
+            </tr>
           </tbody>
         </v-table>
-        <v-pagination v-model="page" :length="lastPage" :total-visible="7" class="mt-4" @update:model-value="load" />
+
+        <div class="ga-table-pagination">
+          <v-pagination
+            v-model="page"
+            :length="lastPage"
+            :total-visible="7"
+            @update:model-value="load"
+          />
+        </div>
       </v-card-text>
     </v-card>
   </div>
@@ -111,3 +171,58 @@ async function load() {
 
 onMounted(load)
 </script>
+
+<style scoped>
+.ga-page {
+  min-height: 100%;
+  padding-bottom: var(--ga-space-xl);
+}
+
+.ga-alert {
+  margin-bottom: var(--ga-space-md);
+}
+
+.ga-filters {
+  margin-bottom: var(--ga-space-md);
+}
+
+.ga-filters-actions {
+  display: flex;
+  align-items: flex-end;
+  justify-content: flex-end;
+}
+
+.ga-table {
+  width: 100%;
+  border-radius: var(--ga-radius);
+  overflow: hidden;
+}
+
+.ga-table :deep(thead tr) {
+  background: var(--ga-table-header);
+}
+
+.ga-table :deep(th) {
+  padding: 10px 16px;
+  font-size: 13px;
+  font-weight: 500;
+  color: var(--ga-text-secondary);
+  border-bottom: 1px solid var(--ga-card-border);
+}
+
+.ga-table :deep(td) {
+  padding: 10px 16px;
+  font-size: 14px;
+  border-bottom: 1px solid var(--ga-card-border);
+}
+
+.ga-table-empty-cell {
+  padding: 0;
+}
+
+.ga-table-pagination {
+  display: flex;
+  justify-content: flex-end;
+  margin-top: var(--ga-space-md);
+}
+</style>
