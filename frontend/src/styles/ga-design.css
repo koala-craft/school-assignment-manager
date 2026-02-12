@@ -390,6 +390,126 @@
   gap: var(--ga-space-xs);
 }
 
+/* ===== ドロップダウン（FAQカテゴリ等と共通構成） ===== */
+.ga-select-inline {
+  display: flex;
+  align-items: center;
+  gap: var(--ga-space-sm);
+  flex-shrink: 0;
+  min-width: 0;
+}
+
+.ga-select-label {
+  font-size: 13px;
+  font-weight: 500;
+  line-height: 1;
+  color: var(--ga-text-secondary);
+  flex-shrink: 0;
+}
+
+.ga-select-field {
+  width: 180px;
+  flex-shrink: 0;
+}
+
+.ga-select-inline--settings {
+  align-self: start;
+}
+
+.ga-select-inline--settings .ga-select-field {
+  width: 100%;
+  min-width: 180px;
+}
+
+.ga-select-field :deep(.v-field) {
+  font-size: 14px;
+  font-weight: 400;
+  min-height: 40px;
+  height: 40px;
+  border-radius: var(--ga-radius-sm);
+  border: 1px solid var(--ga-card-border);
+  background: var(--ga-card-bg);
+  box-shadow: none;
+  padding-inline: 12px;
+  transition: var(--ga-transition);
+  display: flex;
+  align-items: center;
+}
+
+.ga-select-field :deep(.v-field--focused),
+.ga-select-field :deep(.v-field:focus-within) {
+  border-color: var(--ga-brand);
+  box-shadow: var(--ga-focus-ring);
+}
+
+.ga-select-field :deep(.v-field__outline) {
+  display: none;
+}
+
+.ga-select-field :deep(.v-field__input) {
+  min-height: 38px;
+  height: 38px;
+  padding: 0;
+  align-self: center;
+  display: flex;
+  align-items: center;
+}
+
+.ga-select-field :deep(.v-select__selection) {
+  margin: 0;
+  align-items: center;
+}
+
+.ga-select-field :deep(.v-field__input input) {
+  padding: 0;
+  margin: 0;
+  line-height: 1.5;
+  height: auto;
+  align-self: center;
+}
+
+.ga-select-field :deep(.v-field__append-inner) {
+  padding-inline-start: 0;
+  align-items: center;
+}
+
+/* 内部ラベルを非表示（外部ラベルを使うため） */
+.ga-select-field :deep(.v-label),
+.ga-select-field :deep(.v-field__outline .v-label),
+.ga-select-field :deep(label) {
+  display: none !important;
+}
+
+/* テレポート先のドロップダウンメニュー（共通） */
+.ga-select-menu {
+  border-radius: var(--ga-radius-sm) !important;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.12) !important;
+  border: 1px solid var(--ga-card-border) !important;
+  padding: 4px 0 !important;
+  max-height: 320px !important;
+}
+
+.ga-select-menu .v-list-item {
+  min-height: 40px !important;
+  font-size: 14px !important;
+  line-height: 1.5 !important;
+  color: var(--ga-text) !important;
+  padding-inline: 16px !important;
+}
+
+.ga-select-menu .v-list-item:hover {
+  background: var(--ga-table-hover) !important;
+}
+
+.ga-select-menu .v-list-item--active {
+  background: var(--ga-brand-light) !important;
+  color: var(--ga-brand) !important;
+}
+
+.ga-select-menu .v-list-item--active:hover {
+  background: #D2E3FC !important;
+}
+
 /* ===== レスポンシブ ===== */
 @media (max-width: 599px) {
   .ga-card-header,
