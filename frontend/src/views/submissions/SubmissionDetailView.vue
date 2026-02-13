@@ -237,7 +237,7 @@ const backTo = computed(() =>
 )
 
 const backLabel = computed(() =>
-  auth.canAccessTeacher ? '採点一覧' : '提出履歴'
+  auth.canAccessTeacher ? '採点' : '提出履歴'
 )
 
 const defaultScoreText = computed(() => {

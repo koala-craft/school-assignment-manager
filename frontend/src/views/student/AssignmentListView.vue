@@ -2,8 +2,8 @@
   <div class="ga-page">
     <!-- GA風：ページヘッダー -->
     <header class="ga-page-header">
-      <h1 class="ga-page-title">課題一覧</h1>
-      <p class="ga-page-subtitle">履修科目の課題一覧と提出状況</p>
+      <h1 class="ga-page-title">課題</h1>
+      <p class="ga-page-subtitle">履修科目の課題と提出状況</p>
     </header>
 
     <v-alert

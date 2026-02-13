@@ -3,7 +3,7 @@
     <header class="ga-page-header">
       <h1 class="ga-page-title">採点</h1>
       <p class="ga-page-subtitle">
-        担当科目の未採点提出一覧です。学生名または課題名をクリックして詳細画面から採点を行います。
+        担当科目の未採点提出です。学生名または課題名をクリックして詳細画面から採点を行います。
       </p>
     </header>
 
@@ -18,11 +18,10 @@
     </v-alert>
 
     <section class="ga-card">
-      <div class="ga-card-header">
-        <h2 class="ga-card-title">未採点一覧</h2>
-        <span v-if="items.length > 0" class="ga-card-meta">{{ items.length }}件</span>
-      </div>
       <div class="ga-card-body">
+        <div v-if="items.length > 0" class="ga-list-meta-bar">
+          <span class="ga-card-meta">{{ items.length }}件</span>
+        </div>
         <div class="ga-grading-table-wrap">
           <template v-if="loading && items.length === 0">
             <div class="ga-modern-table ga-modern-table-loading">
@@ -47,7 +46,7 @@
             </div>
           </template>
           <template v-else-if="items.length > 0">
-            <div class="ga-modern-table" role="table" aria-label="未採点一覧">
+            <div class="ga-modern-table" role="table" aria-label="未採点">
               <div class="ga-modern-table-header ga-grading-cols" role="row">
                 <div class="ga-modern-table-cell" role="columnheader">ID</div>
                 <div class="ga-modern-table-cell" role="columnheader">学生名</div>
@@ -84,7 +83,7 @@
             <div class="ga-empty">
               <v-icon size="40" class="ga-empty-icon">mdi-checkbox-marked-circle-outline</v-icon>
               <p class="ga-empty-text">未採点の提出はありません</p>
-              <p class="ga-empty-hint">学生が提出すると一覧に表示されます</p>
+              <p class="ga-empty-hint">学生が提出すると表示されます</p>
             </div>
           </template>
         </div>

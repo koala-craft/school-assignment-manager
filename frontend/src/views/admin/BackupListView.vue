@@ -4,7 +4,7 @@
       <div class="ga-backup-header-inner">
         <div>
           <h1 class="ga-page-title">バックアップ管理</h1>
-          <p class="ga-page-subtitle">データベースのバックアップを作成・一覧表示します</p>
+          <p class="ga-page-subtitle">データベースのバックアップを作成・表示します</p>
         </div>
         <v-btn
           color="primary"
@@ -29,11 +29,10 @@
     </v-alert>
 
     <section class="ga-card">
-      <div class="ga-card-header">
-        <h2 class="ga-card-title">バックアップ一覧</h2>
-        <span v-if="items.length > 0" class="ga-card-meta">{{ items.length }}件</span>
-      </div>
       <div class="ga-card-body">
+        <div v-if="items.length > 0" class="ga-list-meta-bar">
+          <span class="ga-card-meta">{{ items.length }}件</span>
+        </div>
         <template v-if="loading && items.length === 0">
           <div class="ga-modern-table ga-modern-table-loading">
             <div class="ga-modern-table-header ga-modern-table-cols-4-backup" role="row">
@@ -53,7 +52,7 @@
           </div>
         </template>
         <template v-else-if="items.length > 0">
-          <div class="ga-modern-table" role="table" aria-label="バックアップ一覧">
+          <div class="ga-modern-table" role="table" aria-label="バックアップ">
             <div class="ga-modern-table-header ga-modern-table-cols-4-backup" role="row">
               <div class="ga-modern-table-cell" role="columnheader">ID</div>
               <div class="ga-modern-table-cell" role="columnheader">ファイル名</div>

@@ -2,9 +2,9 @@
   <div class="ga-page ga-subject-create-page">
     <div class="ga-subject-create-outer">
       <header class="ga-page-header ga-subject-create-header">
-        <router-link to="/teacher/subjects" class="ga-back-link" aria-label="科目一覧に戻る">
+        <router-link to="/teacher/subjects" class="ga-back-link" aria-label="科目管理に戻る">
           <v-icon size="20">mdi-arrow-left</v-icon>
-          科目一覧
+          科目管理
         </router-link>
         <h1 class="ga-page-title">科目登録</h1>
         <p class="ga-page-subtitle">

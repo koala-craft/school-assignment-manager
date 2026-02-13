@@ -31,10 +31,6 @@
 
     <!-- カード -->
     <section class="ga-card">
-      <div class="ga-card-header">
-        <h2 class="ga-card-title">ユーザー一覧</h2>
-        <span v-if="items.length > 0" class="ga-card-meta">{{ items.length }}件</span>
-      </div>
       <div class="ga-card-body">
         <!-- ツールバー -->
         <div class="ga-toolbar" style="padding: var(--ga-space-md) var(--ga-space-lg); border-bottom: 1px solid var(--ga-card-border);">
@@ -59,6 +55,7 @@
               <v-icon size="18">mdi-close</v-icon>
             </button>
           </div>
+          <span v-if="items.length > 0" class="ga-toolbar-meta">{{ items.length }}件</span>
         </div>
 
         <!-- テーブル -->

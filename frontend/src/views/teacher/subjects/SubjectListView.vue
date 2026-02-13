@@ -31,11 +31,10 @@
 
     <!-- カード -->
     <section class="ga-card">
-      <div class="ga-card-header">
-        <h2 class="ga-card-title">科目一覧</h2>
-        <span v-if="items.length > 0" class="ga-card-meta">{{ items.length }}件</span>
-      </div>
       <div class="ga-card-body">
+        <div v-if="items.length > 0" class="ga-list-meta-bar">
+          <span class="ga-card-meta">{{ items.length }}件</span>
+        </div>
         <!-- テーブル -->
         <div style="overflow-x: auto;">
           <table style="width: 100%; border-collapse: collapse;">

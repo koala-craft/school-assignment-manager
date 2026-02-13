@@ -36,7 +36,7 @@
             class="ga-btn-secondary"
             prepend-icon="mdi-arrow-left"
           >
-            一覧へ戻る
+            通知へ戻る
           </v-btn>
         </div>
       </div>

@@ -28,11 +28,10 @@
     </v-alert>
 
     <section class="ga-card">
-      <div class="ga-card-header">
-        <h2 class="ga-card-title">年度一覧</h2>
-        <span v-if="items.length > 0" class="ga-card-meta">{{ items.length }}件</span>
-      </div>
       <div class="ga-card-body">
+        <div v-if="items.length > 0" class="ga-list-meta-bar">
+          <span class="ga-card-meta">{{ items.length }}件</span>
+        </div>
         <template v-if="loading && items.length === 0">
           <div class="ga-modern-table ga-modern-table-loading">
             <div class="ga-modern-table-header ga-modern-table-cols-6" role="row">
@@ -56,7 +55,7 @@
           </div>
         </template>
         <template v-else-if="items.length > 0">
-          <div class="ga-modern-table" role="table" aria-label="年度一覧">
+          <div class="ga-modern-table" role="table" aria-label="年度">
             <div class="ga-modern-table-header ga-modern-table-cols-6" role="row">
               <div class="ga-modern-table-cell" role="columnheader">年度</div>
               <div class="ga-modern-table-cell" role="columnheader">年度名</div>

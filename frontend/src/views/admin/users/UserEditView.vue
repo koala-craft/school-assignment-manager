@@ -2,9 +2,9 @@
   <div class="ga-page ga-page--glass">
     <div class="ga-settings-outer">
     <header class="ga-page-header ga-user-edit-header">
-      <router-link to="/admin/users" class="ga-back-link" aria-label="ユーザー一覧に戻る">
+      <router-link to="/admin/users" class="ga-back-link" aria-label="ユーザー管理に戻る">
         <v-icon size="20">mdi-arrow-left</v-icon>
-        ユーザー一覧
+        ユーザー管理
       </router-link>
       <h1 class="ga-page-title">ユーザー編集</h1>
       <p class="ga-page-subtitle">

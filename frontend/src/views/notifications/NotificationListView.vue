@@ -2,7 +2,7 @@
   <div class="ga-page">
     <!-- GA風：ページヘッダー -->
     <header class="ga-page-header">
-      <h1 class="ga-page-title">通知一覧</h1>
+      <h1 class="ga-page-title">通知</h1>
       <p class="ga-page-subtitle">システムからの通知とお知らせ</p>
     </header>
 
@@ -21,7 +21,6 @@
     <section class="ga-card">
       <div class="ga-card-header">
         <h2 class="ga-card-title">通知</h2>
-        <span v-if="items.length > 0" class="ga-card-meta">{{ items.length }}件</span>
       </div>
       <div class="ga-card-body">
         <!-- ツールバー -->
@@ -35,6 +34,7 @@
           >
             すべて既読にする
           </v-btn>
+          <span v-if="items.length > 0" class="ga-toolbar-meta">{{ items.length }}件</span>
         </div>
 
         <!-- リスト -->

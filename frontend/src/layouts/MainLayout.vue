@@ -81,7 +81,6 @@
         <template v-for="(group, gi) in menuGroups" :key="group.heading">
           <template v-if="group.items.some((i) => i.visible)">
             <hr v-if="gi > 0" class="ga-nav-divider" />
-            <div v-if="!navRail" class="ga-nav-group-header">{{ group.heading }}</div>
             <router-link
               v-for="item in group.items.filter((i) => i.visible)"
               :key="item.to"
@@ -330,6 +329,7 @@ async function handleLogout() {
   height: calc(100vh - 64px) !important;
   min-height: calc(100dvh - 64px);
   transition: width 0.25s cubic-bezier(0.4, 0, 0.2, 1) !important;
+  overflow: visible !important;
 }
 
 /* 画像スロットを非表示（使用しない） */
@@ -340,7 +340,8 @@ async function handleLogout() {
 .ga-nav-drawer :deep(.v-navigation-drawer__content) {
   display: flex;
   flex-direction: column;
-  overflow: hidden;
+  overflow-x: visible;
+  overflow-y: hidden;
   height: 100%;
 }
 
@@ -349,7 +350,7 @@ async function handleLogout() {
   flex: 1;
   min-height: 0;
   overflow-y: auto !important;
-  overflow-x: hidden;
+  overflow-x: visible;
   padding: 0.5rem 0.625rem;
   display: flex;
   flex-direction: column;
@@ -383,9 +384,11 @@ async function handleLogout() {
   letter-spacing: 0.08em;
   padding: 0.375rem 0.75rem 0.125rem;
   text-transform: uppercase;
+  white-space: nowrap;
+  overflow: visible;
 }
 
-/* Gmail風・カード風リスト項目 */
+/* Gmail風・カード風リスト項目（開閉アニメーション時に文字の縦あふれを防ぐためはみだしを許容） */
 .ga-nav-item {
   display: flex;
   align-items: center;
@@ -398,6 +401,7 @@ async function handleLogout() {
     color 0.2s cubic-bezier(0.4, 0, 0.2, 1);
   min-height: 40px;
   box-sizing: border-box;
+  overflow: visible;
 }
 
 .ga-nav-item:hover {
@@ -430,6 +434,8 @@ async function handleLogout() {
 .ga-nav-item-content {
   flex: 1;
   min-width: 0;
+  white-space: nowrap;
+  overflow: visible;
 }
 
 .ga-nav-item-title {
