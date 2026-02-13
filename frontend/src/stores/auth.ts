@@ -30,9 +30,9 @@ export const useAuthStore = defineStore('auth', () => {
   const isStudent = computed(() => user.value?.role === 'student')
 
   const canAccessAdmin = computed(() => isAdmin.value)
-  const canAccessTeacher = computed(() => isAdmin.value || isTeacher.value)
-  const canAccessStudentAdmin = computed(() => isAdmin.value || isStudentAdmin.value)
-  const canAccessStudent = computed(() => isAdmin.value || isStudent.value)
+  const canAccessTeacher = computed(() => isTeacher.value)
+  const canAccessStudentAdmin = computed(() => isStudentAdmin.value)
+  const canAccessStudent = computed(() => isStudent.value)
 
   async function fetchUser(): Promise<AuthUser | null> {
     if (!token.value) return null

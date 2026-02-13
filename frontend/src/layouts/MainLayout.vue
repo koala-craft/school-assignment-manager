@@ -1,60 +1,21 @@
 <template>
   <v-app class="app-modern">
-    <!-- 左ナビゲーション（常時表示・トグルで最小化↔展開） -->
-    <v-navigation-drawer
-      :model-value="true"
-      v-model:rail="navRail"
-      :width="280"
-      :rail-width="72"
-      :expand-on-hover="false"
-      permanent
-      class="ga-nav-drawer"
-      elevation="0"
-    >
-      <div class="ga-nav-inner">
-        <div class="ga-nav-header">
-          <v-btn
-            icon
-            variant="text"
-            size="small"
-            class="ga-nav-toggle-btn"
-            :aria-label="navRail ? 'ナビゲーションを展開' : 'ナビゲーションを最小化'"
-            @click="toggleNav"
-          >
-            <component :is="navRail ? ChevronRight : ChevronLeft" :size="18" stroke-width="2" class="ga-nav-toggle-icon" />
-          </v-btn>
-        </div>
-        <nav class="ga-nav-list" aria-label="メインメニュー">
-          <template v-for="(group, gi) in menuGroups" :key="group.heading">
-            <template v-if="group.items.some((i) => i.visible)">
-              <hr v-if="gi > 0" class="ga-nav-divider" />
-              <div v-if="!navRail" class="ga-nav-group-header">{{ group.heading }}</div>
-              <router-link
-                v-for="item in group.items.filter((i) => i.visible)"
-                :key="item.to"
-                :to="item.to"
-                class="ga-nav-item"
-                :class="{ 'ga-nav-item--active': isActive(item.to) }"
-                :title="navRail ? item.title : undefined"
-              >
-                <component :is="item.icon" :size="20" stroke-width="1.75" class="ga-nav-item-icon" />
-                <span v-if="!navRail" class="ga-nav-item-content">
-                  <span class="ga-nav-item-title">{{ item.title }}</span>
-                </span>
-              </router-link>
-            </template>
-          </template>
-        </nav>
-      </div>
-    </v-navigation-drawer>
-
-    <div class="ga-main-wrapper" :style="mainWrapperStyle">
-    <!-- ヘッダー（ログイン画面と同じデザイン） -->
+    <!-- ヘッダー（開閉ボタン＋アプリバー）：全幅固定、開閉時も動かない -->
     <v-app-bar
       elevation="0"
       height="64"
       class="app-bar-modern ga-app-bar-with-nav"
     >
+      <v-btn
+        icon
+        variant="text"
+        size="small"
+        class="ga-nav-toggle-btn"
+        :aria-label="navRail ? 'ナビゲーションを展開' : 'ナビゲーションを最小化'"
+        @click="toggleNav"
+      >
+        <component :is="navRail ? ChevronRight : ChevronLeft" :size="18" stroke-width="2" class="ga-nav-toggle-icon" />
+      </v-btn>
       <div class="app-bar-brand">
         <router-link to="/" class="app-bar-brand-link">
           <div class="app-bar-brand-icon">
@@ -105,8 +66,43 @@
       </v-menu>
     </v-app-bar>
 
+    <!-- 左ナビゲーション（ヘッダー下・開閉時もヘッダーは動かない） -->
+    <v-navigation-drawer
+      :model-value="true"
+      v-model:rail="navRail"
+      :width="240"
+      :rail-width="72"
+      :expand-on-hover="false"
+      permanent
+      class="ga-nav-drawer"
+      elevation="0"
+    >
+      <nav class="ga-nav-list" aria-label="メインメニュー">
+        <template v-for="(group, gi) in menuGroups" :key="group.heading">
+          <template v-if="group.items.some((i) => i.visible)">
+            <hr v-if="gi > 0" class="ga-nav-divider" />
+            <div v-if="!navRail" class="ga-nav-group-header">{{ group.heading }}</div>
+            <router-link
+              v-for="item in group.items.filter((i) => i.visible)"
+              :key="item.to"
+              :to="item.to"
+              class="ga-nav-item"
+              :class="{ 'ga-nav-item--active': isActive(item.to) }"
+              :title="navRail ? item.title : undefined"
+            >
+              <component :is="item.icon" :size="20" stroke-width="1.75" class="ga-nav-item-icon" />
+              <span v-if="!navRail" class="ga-nav-item-content">
+                <span class="ga-nav-item-title">{{ item.title }}</span>
+              </span>
+            </router-link>
+          </template>
+        </template>
+      </nav>
+    </v-navigation-drawer>
+
+    <div class="ga-main-wrapper" :style="mainWrapperStyle">
     <v-main class="main-content">
-      <v-container fluid class="main-container py-6 px-4 px-md-6">
+      <v-container fluid class="main-container py-6 px-6 px-md-8">
         <div class="content-inner">
           <router-view />
         </div>
@@ -179,7 +175,7 @@ function toggleNav() {
 }
 
 const mainWrapperStyle = computed(() => ({
-  marginInlineStart: navRail.value ? '72px' : '280px',
+  marginInlineStart: navRail.value ? '72px' : '240px',
   transition: 'margin-inline-start 0.25s cubic-bezier(0.4, 0, 0.2, 1)',
 }))
 
@@ -257,7 +253,6 @@ async function handleLogout() {
 .app-bar-modern {
   background: rgba(255, 255, 255, 0.95) !important;
   backdrop-filter: blur(8px);
-  border-bottom: 1px solid rgba(0, 0, 0, 0.06);
   box-shadow: 0 1px 3px rgba(0, 0, 0, 0.04);
 }
 
@@ -265,6 +260,10 @@ async function handleLogout() {
   padding-inline: 1rem 1.5rem;
 }
 
+/* アプリバー画像：ナビ最小幅(24px)より右に固定配置、開閉時も動かない */
+.app-bar-brand {
+  margin-inline-start: 24px;
+}
 
 .app-bar-brand-link {
   display: flex;
@@ -319,17 +318,17 @@ async function handleLogout() {
   letter-spacing: 0.03em;
 }
 
-/* 左ナビゲーション（画面に固定・常時表示） */
+/* 左ナビゲーション（ヘッダー下に配置・開閉時もヘッダーは動かない） */
 .ga-nav-drawer {
   position: fixed !important;
-  top: 0 !important;
+  top: 64px !important;
   left: 0 !important;
   bottom: 0 !important;
-  z-index: 100;
+  z-index: 99;
   border-right: 1px solid rgba(0, 0, 0, 0.08);
   background: rgba(255, 255, 255, 0.98) !important;
-  height: 100vh !important;
-  min-height: 100dvh;
+  height: calc(100vh - 64px) !important;
+  min-height: calc(100dvh - 64px);
   transition: width 0.25s cubic-bezier(0.4, 0, 0.2, 1) !important;
 }
 
@@ -345,26 +344,7 @@ async function handleLogout() {
   height: 100%;
 }
 
-.ga-nav-inner {
-  display: flex;
-  flex-direction: column;
-  height: 100%;
-  min-height: 0;
-}
-
-.ga-nav-header {
-  flex-shrink: 0;
-  padding: 0.75rem;
-  border-bottom: 1px solid rgba(0, 0, 0, 0.06);
-  display: flex;
-  align-items: center;
-  justify-content: flex-start;
-}
-
-.ga-nav-drawer.v-navigation-drawer--rail .ga-nav-header {
-  justify-content: center;
-}
-
+/* ナビゲーションとの区切り（メインビューのヘッダーとの区切りは設けない） */
 .ga-nav-list {
   flex: 1;
   min-height: 0;
@@ -374,6 +354,7 @@ async function handleLogout() {
   display: flex;
   flex-direction: column;
   gap: 0.25rem;
+  border-top: 1px solid rgba(0, 0, 0, 0.06);
 }
 
 .ga-nav-list::-webkit-scrollbar {
