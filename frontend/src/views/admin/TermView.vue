@@ -1,42 +1,147 @@
 <template>
-  <div class="content-page">
-    <h1 class="content-page-title">学期管理</h1>
-    <v-alert v-if="loadError" type="error" density="compact" class="content-alert" closable>
+  <div class="ga-page ga-term-page">
+    <header class="ga-page-header">
+      <div class="ga-term-header-inner">
+        <div>
+          <h1 class="ga-page-title">学期管理</h1>
+          <p class="ga-page-subtitle">年度ごとの学期（前期・後期など）を管理します</p>
+        </div>
+        <v-btn
+          color="primary"
+          class="ga-btn-primary"
+          prepend-icon="mdi-plus"
+          @click="dialog = true"
+        >
+          新規作成
+        </v-btn>
+      </div>
+    </header>
+
+    <v-alert
+      v-if="loadError"
+      type="error"
+      density="compact"
+      class="ga-alert"
+      closable
+    >
       {{ loadError }}
     </v-alert>
-    <v-card class="content-card">
-      <v-card-text>
-        <v-table>
-          <thead>
-            <tr>
-              <th>年度</th>
-              <th>学期名</th>
-              <th>開始日</th>
-              <th>終了日</th>
-            </tr>
-          </thead>
-          <tbody>
-            <tr v-for="t in items" :key="t.id">
-              <td>{{ t.academic_year?.year }}</td>
-              <td>{{ t.name }}</td>
-              <td>{{ t.start_date }}</td>
-              <td>{{ t.end_date }}</td>
-            </tr>
-          </tbody>
-        </v-table>
-      </v-card-text>
-    </v-card>
-    <v-dialog v-model="dialog" max-width="500" persistent>
-      <v-card>
-        <v-card-title>学期作成</v-card-title>
-        <v-card-text>
-          <v-select v-model="form.academic_year_id" label="年度" :items="yearItems" item-title="name" item-value="id" variant="outlined" />
-          <v-text-field v-model="form.name" label="学期名" variant="outlined" />
-          <v-text-field v-model="form.start_date" label="開始日" type="date" variant="outlined" />
-          <v-text-field v-model="form.end_date" label="終了日" type="date" variant="outlined" />
+
+    <section class="ga-card">
+      <div class="ga-card-header">
+        <h2 class="ga-card-title">学期一覧</h2>
+        <span v-if="items.length > 0" class="ga-card-meta">{{ items.length }}件</span>
+      </div>
+      <div class="ga-card-body">
+        <template v-if="loading && items.length === 0">
+          <div class="ga-modern-table ga-modern-table-loading">
+            <div class="ga-modern-table-header ga-modern-table-cols-4" role="row">
+              <div class="ga-modern-table-cell" role="columnheader">年度</div>
+              <div class="ga-modern-table-cell" role="columnheader">学期名</div>
+              <div class="ga-modern-table-cell align-end" role="columnheader">開始日</div>
+              <div class="ga-modern-table-cell align-end" role="columnheader">終了日</div>
+            </div>
+            <div class="ga-modern-table-body">
+              <div v-for="i in 3" :key="i" class="ga-modern-table-row ga-modern-table-cols-4 ga-modern-table-skeleton">
+                <div class="ga-modern-table-cell"><span class="ga-skeleton" /></div>
+                <div class="ga-modern-table-cell"><span class="ga-skeleton" /></div>
+                <div class="ga-modern-table-cell"><span class="ga-skeleton" /></div>
+                <div class="ga-modern-table-cell"><span class="ga-skeleton" /></div>
+              </div>
+            </div>
+          </div>
+        </template>
+        <template v-else-if="items.length > 0">
+          <div class="ga-modern-table" role="table" aria-label="学期一覧">
+            <div class="ga-modern-table-header ga-modern-table-cols-4" role="row">
+              <div class="ga-modern-table-cell" role="columnheader">年度</div>
+              <div class="ga-modern-table-cell" role="columnheader">学期名</div>
+              <div class="ga-modern-table-cell align-end" role="columnheader">開始日</div>
+              <div class="ga-modern-table-cell align-end" role="columnheader">終了日</div>
+            </div>
+            <div class="ga-modern-table-body">
+              <div
+                v-for="t in items"
+                :key="t.id"
+                class="ga-modern-table-row ga-modern-table-cols-4"
+                role="row"
+                tabindex="0"
+              >
+                <div class="ga-modern-table-cell ga-cell-brand" role="cell">{{ t.academic_year?.year }}</div>
+                <div class="ga-modern-table-cell" role="cell">{{ t.name }}</div>
+                <div class="ga-modern-table-cell align-end" role="cell">{{ t.start_date }}</div>
+                <div class="ga-modern-table-cell align-end" role="cell">{{ t.end_date }}</div>
+              </div>
+            </div>
+          </div>
+        </template>
+        <div v-else class="ga-empty">
+          <v-icon size="40" class="ga-empty-icon">mdi-calendar-blank-outline</v-icon>
+          <p class="ga-empty-text">学期がありません</p>
+          <p class="ga-empty-hint">新規作成ボタンから学期を登録してください</p>
+        </div>
+      </div>
+    </section>
+
+    <v-dialog v-model="dialog" max-width="500" persistent class="ga-dialog" scrollable>
+      <v-card class="ga-dialog-card" elevation="0">
+        <div class="ga-dialog-header">
+          <h2 class="ga-dialog-title">学期作成</h2>
+        </div>
+        <v-card-text class="ga-dialog-body">
+          <div class="ga-dialog-form">
+            <div class="ga-term-year-inline ga-term-year-inline--full">
+              <span class="ga-term-year-label" id="term-year-label">年度</span>
+              <v-select
+                v-model="form.academic_year_id"
+                :items="yearItems"
+                item-title="name"
+                item-value="id"
+                density="compact"
+                variant="outlined"
+                hide-details
+                class="ga-term-year-select"
+                aria-labelledby="term-year-label"
+                :menu-props="{ contentClass: 'ga-term-year-menu', maxHeight: 320 }"
+              >
+                <template #label />
+              </v-select>
+            </div>
+            <div class="ga-term-name-inline">
+              <span class="ga-term-name-label" id="term-name-label">学期名</span>
+              <v-text-field
+                v-model="form.name"
+                variant="outlined"
+                density="compact"
+                hide-details
+                placeholder="例：前期、後期"
+                class="ga-term-name-field"
+                aria-labelledby="term-name-label"
+              >
+                <template #label />
+              </v-text-field>
+            </div>
+            <v-text-field
+              v-model="form.start_date"
+              label="開始日"
+              type="date"
+              variant="outlined"
+              density="comfortable"
+              hide-details
+              class="ga-dialog-field"
+            />
+            <v-text-field
+              v-model="form.end_date"
+              label="終了日"
+              type="date"
+              variant="outlined"
+              density="comfortable"
+              hide-details
+              class="ga-dialog-field"
+            />
+          </div>
         </v-card-text>
-        <v-card-actions style="padding: var(--ga-space-md) var(--ga-space-lg); border-top: 1px solid var(--ga-card-border);">
-          <v-spacer />
+        <div class="ga-dialog-actions">
           <v-btn
             @click="dialog = false"
             :disabled="loading"
@@ -53,17 +158,9 @@
           >
             作成
           </v-btn>
-        </v-card-actions>
+        </div>
       </v-card>
     </v-dialog>
-    <v-btn
-      class="mt-4 ga-btn-primary"
-      color="primary"
-      @click="dialog = true"
-      prepend-icon="mdi-plus"
-    >
-      新規作成
-    </v-btn>
   </div>
 </template>
 
@@ -99,6 +196,7 @@ const form = reactive({
 })
 
 async function load() {
+  loading.value = true
   try {
     loadError.value = null
     const [termsRes, yearsRes] = await Promise.all([
@@ -113,6 +211,8 @@ async function load() {
   } catch (e) {
     loadError.value = (e as Error)?.message ?? 'データの取得に失敗しました'
     console.error('[TermView]', e)
+  } finally {
+    loading.value = false
   }
 }
 
@@ -136,3 +236,174 @@ async function create() {
 
 onMounted(load)
 </script>
+
+<style scoped>
+.ga-page {
+  min-height: 100%;
+  padding-bottom: var(--ga-space-xl);
+}
+
+.ga-term-header-inner {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  flex-wrap: wrap;
+  gap: var(--ga-space-md);
+}
+
+.ga-alert {
+  margin-bottom: var(--ga-space-md);
+}
+
+/* 学期作成モーダル：年度ドロップダウン（FAQカテゴリと同一構造） */
+.ga-term-year-inline {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  flex-shrink: 0;
+  min-width: 0;
+}
+
+.ga-term-year-inline--full .ga-term-year-select {
+  width: 100%;
+  flex: 1;
+  min-width: 0;
+}
+
+.ga-term-year-label {
+  font-size: 13px;
+  font-weight: 500;
+  line-height: 1;
+  color: var(--ga-text-secondary);
+  flex-shrink: 0;
+}
+
+.ga-term-year-select {
+  width: 180px;
+  flex-shrink: 0;
+}
+
+.ga-term-year-select :deep(.v-field) {
+  font-size: 14px;
+  font-weight: 400;
+  min-height: 40px;
+  height: 40px;
+  border-radius: var(--ga-radius-sm);
+  border: 1px solid var(--ga-card-border);
+  background: var(--ga-card-bg);
+  box-shadow: none;
+  padding-inline: 12px;
+  transition: var(--ga-transition);
+  display: flex;
+  align-items: center;
+}
+
+.ga-term-year-select :deep(.v-field--focused),
+.ga-term-year-select :deep(.v-field:focus-within) {
+  border-color: var(--ga-brand);
+  box-shadow: var(--ga-focus-ring);
+}
+
+.ga-term-year-select :deep(.v-field__outline) {
+  display: none;
+}
+
+.ga-term-year-select :deep(.v-field__input) {
+  min-height: 38px;
+  height: 38px;
+  padding: 0;
+  align-self: center;
+  display: flex;
+  align-items: center;
+}
+
+.ga-term-year-select :deep(.v-select__selection) {
+  margin: 0;
+  align-items: center;
+}
+
+.ga-term-year-select :deep(.v-field__input input) {
+  padding: 0;
+  margin: 0;
+  line-height: 1.5;
+  height: auto;
+  align-self: center;
+}
+
+.ga-term-year-select :deep(.v-field__append-inner) {
+  padding-inline-start: 0;
+  align-items: center;
+}
+
+.ga-term-year-select :deep(.v-label),
+.ga-term-year-select :deep(.v-field__outline .v-label),
+.ga-term-year-select :deep(label) {
+  display: none !important;
+}
+
+/* 学期名：外部ラベル＋プレースホルダー（重複を防ぐ） */
+.ga-term-name-inline {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  min-width: 0;
+}
+
+.ga-term-name-inline .ga-term-name-field {
+  flex: 1;
+  min-width: 0;
+}
+
+.ga-term-name-label {
+  font-size: 13px;
+  font-weight: 500;
+  line-height: 1;
+  color: var(--ga-text-secondary);
+  flex-shrink: 0;
+  width: 56px;
+}
+
+.ga-term-name-field :deep(.v-field) {
+  font-size: 14px;
+  min-height: 40px;
+  height: 40px;
+  border-radius: var(--ga-radius-sm);
+  border: 1px solid var(--ga-card-border);
+  background: var(--ga-card-bg);
+  transition: var(--ga-transition);
+}
+
+.ga-term-name-field :deep(.v-field__input) {
+  padding-inline: 12px;
+  min-height: 38px;
+  align-self: center;
+}
+
+.ga-term-name-field :deep(.v-field__input input) {
+  padding: 0;
+  margin: 0;
+}
+
+.ga-term-name-field :deep(.v-field--focused),
+.ga-term-name-field :deep(.v-field:focus-within) {
+  border-color: var(--ga-brand);
+  box-shadow: var(--ga-focus-ring);
+}
+
+.ga-term-name-field :deep(.v-field__outline) {
+  display: none;
+}
+
+.ga-term-name-field :deep(.v-label),
+.ga-term-name-field :deep(.v-field__outline .v-label),
+.ga-term-name-field :deep(label) {
+  display: none !important;
+}
+
+@media (max-width: 599px) {
+  .ga-card-header {
+    padding-left: var(--ga-space-md);
+    padding-right: var(--ga-space-md);
+  }
+}
+</style>

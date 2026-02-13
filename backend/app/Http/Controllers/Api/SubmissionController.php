@@ -68,7 +68,7 @@ class SubmissionController extends Controller
 
         // Include relationships
         if ($request->boolean('with_assignment')) {
-            $query->with('assignment');
+            $query->with('assignment.subject');
         }
         if ($request->boolean('with_student')) {
             $query->with('student');
@@ -221,7 +221,7 @@ class SubmissionController extends Controller
      */
     public function show(string $id)
     {
-        $submission = Submission::with(['assignment', 'student', 'grader'])->findOrFail($id);
+        $submission = Submission::with(['assignment.subject', 'student', 'grader'])->findOrFail($id);
 
         return response()->json([
             'success' => true,

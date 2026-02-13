@@ -62,47 +62,32 @@
         </div>
 
         <!-- テーブル -->
-        <div style="overflow-x: auto;">
-          <table style="width: 100%; border-collapse: collapse;">
+        <div class="ga-user-table-wrap">
+          <table class="ga-user-table">
             <thead>
-              <tr style="background: var(--ga-table-header);">
-                <th style="padding: var(--ga-space-md) var(--ga-space-lg); text-align: left; font-size: 12px; font-weight: 600; color: var(--ga-text-secondary); border-bottom: 1px solid var(--ga-card-border);">ID</th>
-                <th style="padding: var(--ga-space-md) var(--ga-space-lg); text-align: left; font-size: 12px; font-weight: 600; color: var(--ga-text-secondary); border-bottom: 1px solid var(--ga-card-border);">氏名</th>
-                <th style="padding: var(--ga-space-md) var(--ga-space-lg); text-align: left; font-size: 12px; font-weight: 600; color: var(--ga-text-secondary); border-bottom: 1px solid var(--ga-card-border);">メール</th>
-                <th style="padding: var(--ga-space-md) var(--ga-space-lg); text-align: left; font-size: 12px; font-weight: 600; color: var(--ga-text-secondary); border-bottom: 1px solid var(--ga-card-border);">ロール</th>
-                <th style="padding: var(--ga-space-md) var(--ga-space-lg); text-align: left; font-size: 12px; font-weight: 600; color: var(--ga-text-secondary); border-bottom: 1px solid var(--ga-card-border);">学籍番号</th>
-                <th style="padding: var(--ga-space-md) var(--ga-space-lg); text-align: left; font-size: 12px; font-weight: 600; color: var(--ga-text-secondary); border-bottom: 1px solid var(--ga-card-border);">状態</th>
-                <th style="padding: var(--ga-space-md) var(--ga-space-lg); text-align: left; font-size: 12px; font-weight: 600; color: var(--ga-text-secondary); border-bottom: 1px solid var(--ga-card-border);">操作</th>
+              <tr>
+                <th>ID</th>
+                <th>氏名</th>
+                <th>メール</th>
+                <th>ロール</th>
+                <th>学籍番号</th>
+                <th>状態</th>
+                <th>操作</th>
               </tr>
             </thead>
             <tbody>
-              <tr
-                v-for="u in items"
-                :key="u.id"
-                style="border-bottom: 1px solid var(--ga-card-border); transition: var(--ga-transition);"
-                class="ga-table-row"
-              >
-                <td style="padding: var(--ga-space-md) var(--ga-space-lg); font-size: 14px; color: var(--ga-text);">{{ u.id }}</td>
-                <td style="padding: var(--ga-space-md) var(--ga-space-lg); font-size: 14px; color: var(--ga-text); font-weight: 500;">{{ u.name }}</td>
-                <td style="padding: var(--ga-space-md) var(--ga-space-lg); font-size: 14px; color: var(--ga-text);">{{ u.email }}</td>
-                <td style="padding: var(--ga-space-md) var(--ga-space-lg); font-size: 14px; color: var(--ga-text);">{{ roleLabel(u.role) }}</td>
-                <td style="padding: var(--ga-space-md) var(--ga-space-lg); font-size: 14px; color: var(--ga-text-secondary);">{{ u.student_number || '-' }}</td>
-                <td style="padding: var(--ga-space-md) var(--ga-space-lg);">
-                  <span
-                    :style="{
-                      display: 'inline-block',
-                      padding: '4px 8px',
-                      borderRadius: '4px',
-                      fontSize: '12px',
-                      fontWeight: 500,
-                      backgroundColor: u.is_active ? '#E8F5E9' : '#F5F5F5',
-                      color: u.is_active ? '#2E7D32' : '#757575'
-                    }"
-                  >
+              <tr v-for="u in items" :key="u.id" class="ga-user-table-row">
+                <td>{{ u.id }}</td>
+                <td>{{ u.name }}</td>
+                <td>{{ u.email }}</td>
+                <td>{{ roleLabel(u.role) }}</td>
+                <td>{{ u.student_number || '-' }}</td>
+                <td>
+                  <span class="ga-user-table-status" :class="u.is_active ? 'ga-user-table-status--active' : 'ga-user-table-status--inactive'">
                     {{ u.is_active ? '有効' : '無効' }}
                   </span>
                 </td>
-                <td style="padding: var(--ga-space-md) var(--ga-space-lg);">
+                <td>
                   <v-btn
                     size="small"
                     variant="text"
@@ -189,8 +174,76 @@ onMounted(load)
   padding-bottom: var(--ga-space-xl);
 }
 
-.ga-table-row:hover {
-  background: var(--ga-table-hover);
+.ga-user-table-wrap {
+  overflow-x: auto;
+}
+
+.ga-user-table {
+  width: 100%;
+  border-collapse: collapse;
+  background: #FFFFFF;
+}
+
+.ga-user-table thead tr {
+  background: var(--ga-table-header);
+}
+
+.ga-user-table th {
+  padding: 14px 16px;
+  text-align: left;
+  font-size: 13px;
+  font-weight: 600;
+  color: var(--ga-text);
+  border-bottom: 1px solid var(--ga-table-border-header);
+}
+
+.ga-user-table tbody tr:nth-child(even) td {
+  background: #FAFAFA;
+}
+
+.ga-user-table tbody tr:nth-child(odd) td {
+  background: #FFFFFF;
+}
+
+.ga-user-table td {
+  padding: 14px 16px;
+  font-size: 14px;
+  color: var(--ga-text);
+  border-bottom: 1px solid var(--ga-table-border);
+}
+
+.ga-user-table td:nth-child(2) {
+  font-weight: 500;
+}
+
+.ga-user-table td:nth-child(5) {
+  color: var(--ga-text-secondary);
+}
+
+.ga-user-table-row:hover td {
+  background: var(--ga-table-hover) !important;
+}
+
+.ga-user-table-row:last-child td {
+  border-bottom: none;
+}
+
+.ga-user-table-status {
+  display: inline-block;
+  padding: 4px 8px;
+  border-radius: 4px;
+  font-size: 12px;
+  font-weight: 500;
+}
+
+.ga-user-table-status--active {
+  background: #E8F5E9;
+  color: #2E7D32;
+}
+
+.ga-user-table-status--inactive {
+  background: #F5F5F5;
+  color: #757575;
 }
 
 @media (max-width: 599px) {
@@ -198,11 +251,11 @@ onMounted(load)
     padding-left: var(--ga-space-md);
     padding-right: var(--ga-space-md);
   }
-  
-  table th,
-  table td {
-    padding-left: var(--ga-space-md) !important;
-    padding-right: var(--ga-space-md) !important;
+
+  .ga-user-table th,
+  .ga-user-table td {
+    padding-left: var(--ga-space-md);
+    padding-right: var(--ga-space-md);
   }
 }
 </style>

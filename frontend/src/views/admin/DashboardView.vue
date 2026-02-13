@@ -37,67 +37,9 @@
         <div class="ga-metric-label">総科目数</div>
       </div>
       <div class="ga-metric-card">
-        <div class="ga-metric-value">{{ data?.total_assignments ?? '-' }}</div>
-        <div class="ga-metric-label">総提出物数</div>
-      </div>
-      <div class="ga-metric-card">
         <div class="ga-metric-value">{{ data?.active_students ?? '-' }}</div>
         <div class="ga-metric-label">アクティブ学生数</div>
       </div>
-    </div>
-
-    <!-- カード -->
-    <div class="ga-cards-grid">
-      <section class="ga-card">
-        <div class="ga-card-header">
-          <h2 class="ga-card-title">最近のアクティビティ</h2>
-        </div>
-        <div class="ga-card-body">
-          <template v-if="data?.recent_activities?.length">
-            <div
-              v-for="a in data.recent_activities"
-              :key="a.id"
-              class="ga-list-row"
-            >
-              <div class="ga-list-cell">
-                <div style="flex: 1;">
-                  <div style="font-weight: 500; color: var(--ga-text);">{{ a.action }} - {{ a.model }}</div>
-                  <div style="font-size: 12px; color: var(--ga-text-secondary); margin-top: 4px;">{{ a.user_name }} / {{ formatDate(a.created_at) }}</div>
-                </div>
-              </div>
-            </div>
-          </template>
-          <div v-else class="ga-empty">
-            <v-icon size="40" class="ga-empty-icon">mdi-information-outline</v-icon>
-            <p class="ga-empty-text">アクティビティはありません</p>
-          </div>
-        </div>
-      </section>
-
-      <section class="ga-card">
-        <div class="ga-card-header">
-          <h2 class="ga-card-title">提出状況</h2>
-        </div>
-        <div class="ga-card-body">
-          <template v-if="data?.submission_stats">
-            <div class="ga-list-row">
-              <div class="ga-list-cell">
-                <span>提出済み: {{ data.submission_stats.submitted }}</span>
-              </div>
-            </div>
-            <div class="ga-list-row">
-              <div class="ga-list-cell">
-                <span>未提出: {{ data.submission_stats.not_submitted }}</span>
-              </div>
-            </div>
-            <div class="ga-list-row">
-              <div class="ga-list-cell">
-                <span>期限超過: {{ data.submission_stats.overdue }}</span>
-              </div>
-            </div>
-          </template>
-        </div>
-      </section>
     </div>
 
     <!-- クイックアクション -->
@@ -135,7 +77,6 @@
 <script setup lang="ts">
 import { ref, onMounted, computed } from 'vue'
 import { useDashboardStore } from '@/stores/dashboard'
-import dayjs from 'dayjs'
 
 const dashboardStore = useDashboardStore()
 const loadError = ref<string | null>(null)
@@ -143,10 +84,6 @@ const isLoading = ref(false)
 
 // ストアからデータを取得（リアクティブ）
 const data = computed(() => dashboardStore.adminData)
-
-function formatDate(d: string) {
-  return dayjs(d).format('YYYY/MM/DD HH:mm')
-}
 
 onMounted(async () => {
   isLoading.value = true
@@ -177,13 +114,6 @@ onMounted(async () => {
   margin-bottom: var(--ga-space-lg);
 }
 
-.ga-cards-grid {
-  display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
-  gap: var(--ga-space-lg);
-  margin-bottom: var(--ga-space-lg);
-}
-
 .ga-actions {
   display: flex;
   flex-wrap: wrap;
@@ -193,10 +123,6 @@ onMounted(async () => {
 
 @media (max-width: 599px) {
   .ga-metrics-grid {
-    grid-template-columns: 1fr;
-  }
-  
-  .ga-cards-grid {
     grid-template-columns: 1fr;
   }
 }

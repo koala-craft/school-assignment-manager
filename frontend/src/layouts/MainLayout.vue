@@ -1,16 +1,60 @@
 <template>
   <v-app class="app-modern">
+    <!-- 左ナビゲーション（常時表示・トグルで最小化↔展開） -->
+    <v-navigation-drawer
+      :model-value="true"
+      v-model:rail="navRail"
+      :width="280"
+      :rail-width="72"
+      :expand-on-hover="false"
+      permanent
+      class="ga-nav-drawer"
+      elevation="0"
+    >
+      <div class="ga-nav-inner">
+        <div class="ga-nav-header">
+          <v-btn
+            icon
+            variant="text"
+            size="small"
+            class="ga-nav-toggle-btn"
+            :aria-label="navRail ? 'ナビゲーションを展開' : 'ナビゲーションを最小化'"
+            @click="toggleNav"
+          >
+            <component :is="navRail ? ChevronRight : ChevronLeft" :size="18" stroke-width="2" class="ga-nav-toggle-icon" />
+          </v-btn>
+        </div>
+        <nav class="ga-nav-list" aria-label="メインメニュー">
+          <template v-for="(group, gi) in menuGroups" :key="group.heading">
+            <template v-if="group.items.some((i) => i.visible)">
+              <hr v-if="gi > 0" class="ga-nav-divider" />
+              <div v-if="!navRail" class="ga-nav-group-header">{{ group.heading }}</div>
+              <router-link
+                v-for="item in group.items.filter((i) => i.visible)"
+                :key="item.to"
+                :to="item.to"
+                class="ga-nav-item"
+                :class="{ 'ga-nav-item--active': isActive(item.to) }"
+                :title="navRail ? item.title : undefined"
+              >
+                <component :is="item.icon" :size="20" stroke-width="1.75" class="ga-nav-item-icon" />
+                <span v-if="!navRail" class="ga-nav-item-content">
+                  <span class="ga-nav-item-title">{{ item.title }}</span>
+                </span>
+              </router-link>
+            </template>
+          </template>
+        </nav>
+      </div>
+    </v-navigation-drawer>
+
+    <div class="ga-main-wrapper" :style="mainWrapperStyle">
     <!-- ヘッダー（ログイン画面と同じデザイン） -->
     <v-app-bar
       elevation="0"
       height="64"
-      class="app-bar-modern"
+      class="app-bar-modern ga-app-bar-with-nav"
     >
-      <v-app-bar-nav-icon
-        class="app-bar-nav-icon"
-        @click="drawer = !drawer"
-        aria-label="ナビゲーションを開く"
-      />
       <div class="app-bar-brand">
         <router-link to="/" class="app-bar-brand-link">
           <div class="app-bar-brand-icon">
@@ -61,53 +105,6 @@
       </v-menu>
     </v-app-bar>
 
-    <!-- ナビゲーション（開閉トグルは全画面で有効・デスクトップでも閉じられる） -->
-    <v-navigation-drawer
-      v-model="drawer"
-      :temporary="true"
-      :width="280"
-      class="drawer-modern"
-      elevation="0"
-    >
-      <div class="drawer-header pa-3 d-none d-md-flex">
-        <v-btn
-          icon
-          variant="text"
-          size="small"
-          class="drawer-close-btn"
-          aria-label="ナビゲーションを閉じる"
-          @click="drawer = false"
-        >
-          <v-icon>mdi-chevron-left</v-icon>
-        </v-btn>
-      </div>
-      <v-list nav density="comfortable" class="py-2 px-3">
-        <template v-for="group in menuGroups" :key="group.heading">
-          <template v-if="group.items.some((i) => i.visible)">
-            <v-list-subheader class="drawer-group-header text-uppercase text-caption font-weight-bold">
-              {{ group.heading }}
-            </v-list-subheader>
-            <v-list-item
-              v-for="item in group.items.filter((i) => i.visible)"
-              :key="item.to"
-              :to="item.to"
-              :prepend-icon="item.icon"
-              :active="isActive(item.to)"
-              rounded="lg"
-              class="mb-1 drawer-item"
-              :class="{ 'v-list-item--active': isActive(item.to) }"
-              @click="drawer = false"
-            >
-              <v-list-item-title>{{ item.title }}</v-list-item-title>
-              <v-list-item-subtitle v-if="item.subtitle" class="text-caption">
-                {{ item.subtitle }}
-              </v-list-item-subtitle>
-            </v-list-item>
-          </template>
-        </template>
-      </v-list>
-    </v-navigation-drawer>
-
     <v-main class="main-content">
       <v-container fluid class="main-container py-6 px-4 px-md-6">
         <div class="content-inner">
@@ -124,17 +121,67 @@
         <router-link to="/help" class="main-footer-link">ヘルプ</router-link>
       </div>
     </footer>
+    </div>
   </v-app>
 </template>
 
 <script setup lang="ts">
-import { ref, computed } from 'vue'
+import { ref, computed, onMounted } from 'vue'
 import { useRoute } from 'vue-router'
 import { useAuthStore } from '@/stores/auth'
+import {
+  HelpCircle,
+  LayoutDashboard,
+  Users,
+  Calendar,
+  CalendarRange,
+  Settings,
+  DatabaseBackup,
+  History,
+  Upload,
+  BookOpen,
+  CircleCheck,
+  FileText,
+  BarChart,
+  FileEdit,
+  ListChecks,
+  ChevronLeft,
+  ChevronRight,
+} from 'lucide-vue-next'
+
+const NAV_EXPANDED_KEY = 'ga-nav-expanded'
 
 const auth = useAuthStore()
 const route = useRoute()
-const drawer = ref(false)
+// navRail: true=最小化(レール), false=展開
+const navRail = ref(false)
+
+onMounted(() => {
+  try {
+    const stored = localStorage.getItem(NAV_EXPANDED_KEY)
+    if (stored !== null) {
+      navRail.value = stored !== 'true'
+    } else if (window.innerWidth < 960) {
+      navRail.value = true
+    }
+  } catch {
+    /* ignore */
+  }
+})
+
+function toggleNav() {
+  navRail.value = !navRail.value
+  try {
+    localStorage.setItem(NAV_EXPANDED_KEY, String(!navRail.value))
+  } catch {
+    /* ignore */
+  }
+}
+
+const mainWrapperStyle = computed(() => ({
+  marginInlineStart: navRail.value ? '72px' : '280px',
+  transition: 'margin-inline-start 0.25s cubic-bezier(0.4, 0, 0.2, 1)',
+}))
 
 const appTitle = import.meta.env.VITE_APP_NAME || '学校提出物管理'
 
@@ -148,45 +195,45 @@ const menuGroups = computed(() => [
   {
     heading: '共通',
     items: [
-      { to: '/help', title: 'ヘルプ', icon: 'mdi-help-circle', subtitle: '使い方・FAQ', visible: true },
+      { to: '/help', title: 'ヘルプ', icon: HelpCircle, subtitle: '使い方・FAQ', visible: true },
     ],
   },
   {
     heading: 'システム管理',
     items: [
-      { to: '/admin/dashboard', title: 'ホーム', icon: 'mdi-view-dashboard', subtitle: '管理者トップ', visible: auth.canAccessAdmin },
-      { to: '/admin/users', title: 'ユーザー管理', icon: 'mdi-account-group', subtitle: '登録・編集・無効化', visible: auth.canAccessAdmin },
-      { to: '/admin/academic-years', title: '年度管理', icon: 'mdi-calendar', subtitle: '年度の作成・切替', visible: auth.canAccessAdmin },
-      { to: '/admin/terms', title: '学期管理', icon: 'mdi-calendar-range', subtitle: '学期の作成・編集', visible: auth.canAccessAdmin },
-      { to: '/admin/system-settings', title: 'システム設定', icon: 'mdi-cog', subtitle: 'メール・通知・セキュリティ', visible: auth.canAccessAdmin },
-      { to: '/admin/backups', title: 'バックアップ', icon: 'mdi-backup-restore', subtitle: '手動実行・ダウンロード', visible: auth.canAccessAdmin },
-      { to: '/admin/audit-logs', title: '監査ログ', icon: 'mdi-history', subtitle: '操作履歴の確認', visible: auth.canAccessAdmin },
-      { to: '/admin/import', title: 'データインポート', icon: 'mdi-upload', subtitle: 'CSV一括取込', visible: auth.canAccessAdmin },
+      { to: '/admin/dashboard', title: 'ホーム', icon: LayoutDashboard, subtitle: '管理者トップ', visible: auth.canAccessAdmin },
+      { to: '/admin/users', title: 'ユーザー管理', icon: Users, subtitle: '登録・編集・無効化', visible: auth.canAccessAdmin },
+      { to: '/admin/academic-years', title: '年度管理', icon: Calendar, subtitle: '年度の作成・切替', visible: auth.canAccessAdmin },
+      { to: '/admin/terms', title: '学期管理', icon: CalendarRange, subtitle: '学期の作成・編集', visible: auth.canAccessAdmin },
+      { to: '/admin/system-settings', title: 'システム設定', icon: Settings, subtitle: 'メール・通知・セキュリティ', visible: auth.canAccessAdmin },
+      { to: '/admin/backups', title: 'バックアップ', icon: DatabaseBackup, subtitle: '手動実行・ダウンロード', visible: auth.canAccessAdmin },
+      { to: '/admin/audit-logs', title: '監査ログ', icon: History, subtitle: '操作履歴の確認', visible: auth.canAccessAdmin },
+      { to: '/admin/import', title: 'データインポート', icon: Upload, subtitle: 'CSV一括取込', visible: auth.canAccessAdmin },
     ],
   },
   {
     heading: '授業・提出物',
     items: [
-      { to: '/teacher/dashboard', title: 'ホーム', icon: 'mdi-view-dashboard', subtitle: '教員トップ・未採点など', visible: auth.canAccessTeacher },
-      { to: '/teacher/subjects', title: '科目管理', icon: 'mdi-book-open-variant', subtitle: '科目一覧・履修・提出物', visible: auth.canAccessTeacher },
-      { to: '/teacher/grading', title: '採点', icon: 'mdi-checkbox-marked-circle', subtitle: '未採点一覧・採点作業', visible: auth.canAccessTeacher },
-      { to: '/teacher/templates', title: 'テンプレート', icon: 'mdi-file-document-multiple', subtitle: '提出物のひな形', visible: auth.canAccessTeacher },
-      { to: '/teacher/reports', title: 'レポート', icon: 'mdi-chart-box', subtitle: 'CSV/Excel/PDF出力', visible: auth.canAccessTeacher },
+      { to: '/teacher/dashboard', title: 'ホーム', icon: LayoutDashboard, subtitle: '教員トップ・未採点など', visible: auth.canAccessTeacher },
+      { to: '/teacher/subjects', title: '科目管理', icon: BookOpen, subtitle: '科目一覧・履修・提出物', visible: auth.canAccessTeacher },
+      { to: '/teacher/grading', title: '採点', icon: CircleCheck, subtitle: '未採点一覧・採点作業', visible: auth.canAccessTeacher },
+      { to: '/teacher/templates', title: 'テンプレート', icon: FileText, subtitle: '提出物のひな形', visible: auth.canAccessTeacher },
+      { to: '/teacher/reports', title: 'レポート', icon: BarChart, subtitle: 'CSV/Excel/PDF出力', visible: auth.canAccessTeacher },
     ],
   },
   {
     heading: '管理者学生',
     items: [
-      { to: '/student-admin/dashboard', title: 'ホーム', icon: 'mdi-view-dashboard', subtitle: '担当科目・更新状況', visible: auth.canAccessStudentAdmin },
-      { to: '/student-admin/submissions', title: '提出状況更新', icon: 'mdi-file-document-edit', subtitle: '提出済み・再提出済みの記録', visible: auth.canAccessStudentAdmin },
+      { to: '/student-admin/dashboard', title: 'ホーム', icon: LayoutDashboard, subtitle: '担当科目・更新状況', visible: auth.canAccessStudentAdmin },
+      { to: '/student-admin/submissions', title: '提出状況更新', icon: FileEdit, subtitle: '提出済み・再提出済みの記録', visible: auth.canAccessStudentAdmin },
     ],
   },
   {
     heading: 'マイ課題',
     items: [
-      { to: '/student/dashboard', title: 'ホーム', icon: 'mdi-view-dashboard', subtitle: '締切・採点サマリー', visible: auth.canAccessStudent },
-      { to: '/student/assignments', title: '課題一覧', icon: 'mdi-format-list-checks', subtitle: '提出・詳細へ', visible: auth.canAccessStudent },
-      { to: '/student/submissions', title: '提出履歴・成績', icon: 'mdi-file-document', subtitle: '科目別成績', visible: auth.canAccessStudent },
+      { to: '/student/dashboard', title: 'ホーム', icon: LayoutDashboard, subtitle: '締切・採点サマリー', visible: auth.canAccessStudent },
+      { to: '/student/assignments', title: '課題一覧', icon: ListChecks, subtitle: '提出・詳細へ', visible: auth.canAccessStudent },
+      { to: '/student/submissions', title: '提出履歴・成績', icon: FileText, subtitle: '科目別成績', visible: auth.canAccessStudent },
     ],
   },
 ])
@@ -218,10 +265,6 @@ async function handleLogout() {
   padding-inline: 1rem 1.5rem;
 }
 
-.app-bar-nav-icon {
-  margin-right: 0.25rem;
-  color: #0f172a !important;
-}
 
 .app-bar-brand-link {
   display: flex;
@@ -276,42 +319,182 @@ async function handleLogout() {
   letter-spacing: 0.03em;
 }
 
-/* ナビゲーション */
-.drawer-modern {
-  border-right: 1px solid rgba(0, 0, 0, 0.06);
+/* 左ナビゲーション（画面に固定・常時表示） */
+.ga-nav-drawer {
+  position: fixed !important;
+  top: 0 !important;
+  left: 0 !important;
+  bottom: 0 !important;
+  z-index: 100;
+  border-right: 1px solid rgba(0, 0, 0, 0.08);
   background: rgba(255, 255, 255, 0.98) !important;
+  height: 100vh !important;
+  min-height: 100dvh;
+  transition: width 0.25s cubic-bezier(0.4, 0, 0.2, 1) !important;
 }
 
-.drawer-modern :deep(.v-list-item--active) {
-  background: rgba(37, 99, 235, 0.12);
-  color: rgb(var(--v-theme-primary));
+/* 画像スロットを非表示（使用しない） */
+.ga-nav-drawer :deep(.v-navigation-drawer__img) {
+  display: none !important;
 }
 
-.drawer-modern :deep(.v-list-item--active .v-icon) {
-  color: rgb(var(--v-theme-primary));
+.ga-nav-drawer :deep(.v-navigation-drawer__content) {
+  display: flex;
+  flex-direction: column;
+  overflow: hidden;
+  height: 100%;
 }
 
-.drawer-header {
+.ga-nav-inner {
+  display: flex;
+  flex-direction: column;
+  height: 100%;
+  min-height: 0;
+}
+
+.ga-nav-header {
+  flex-shrink: 0;
+  padding: 0.75rem;
   border-bottom: 1px solid rgba(0, 0, 0, 0.06);
+  display: flex;
+  align-items: center;
+  justify-content: flex-start;
 }
 
-.drawer-close-btn {
-  color: #64748b;
+.ga-nav-drawer.v-navigation-drawer--rail .ga-nav-header {
+  justify-content: center;
 }
 
-.drawer-item :deep(.v-list-item__prepend) {
-  margin-inline-end: 12px;
+.ga-nav-list {
+  flex: 1;
+  min-height: 0;
+  overflow-y: auto !important;
+  overflow-x: hidden;
+  padding: 0.5rem 0.625rem;
+  display: flex;
+  flex-direction: column;
+  gap: 0.25rem;
 }
 
-.drawer-group-header {
-  color: #64748b;
-  letter-spacing: 0.05em;
-  padding-inline: 0.75rem;
-  margin-top: 0.5rem;
-  min-height: 32px;
+.ga-nav-list::-webkit-scrollbar {
+  width: 6px;
 }
-.drawer-group-header:first-of-type {
-  margin-top: 0;
+
+.ga-nav-list::-webkit-scrollbar-thumb {
+  background: rgba(0, 0, 0, 0.15);
+  border-radius: 3px;
+}
+
+.ga-nav-list::-webkit-scrollbar-thumb:hover {
+  background: rgba(0, 0, 0, 0.25);
+}
+
+.ga-nav-divider {
+  margin: 0.5rem 0.5rem 0.25rem;
+  border: none;
+  border-top: 1px solid rgba(0, 0, 0, 0.08);
+}
+
+.ga-nav-group-header {
+  color: #5f6368;
+  font-size: 0.625rem;
+  font-weight: 600;
+  letter-spacing: 0.08em;
+  padding: 0.375rem 0.75rem 0.125rem;
+  text-transform: uppercase;
+}
+
+/* Gmail風・カード風リスト項目 */
+.ga-nav-item {
+  display: flex;
+  align-items: center;
+  gap: 0.625rem;
+  padding: 0.375rem 0.75rem;
+  border-radius: 0 24px 24px 0;
+  text-decoration: none;
+  color: #202124;
+  transition: background 0.2s cubic-bezier(0.4, 0, 0.2, 1),
+    color 0.2s cubic-bezier(0.4, 0, 0.2, 1);
+  min-height: 40px;
+  box-sizing: border-box;
+}
+
+.ga-nav-item:hover {
+  background: rgba(0, 0, 0, 0.06);
+}
+
+.ga-nav-item--active {
+  background: rgba(26, 115, 232, 0.12);
+  color: #1a73e8;
+}
+
+.ga-nav-item--active .ga-nav-item-icon {
+  color: #1a73e8;
+}
+
+.ga-nav-item-icon {
+  flex-shrink: 0;
+  color: #5f6368;
+  transition: color 0.15s ease;
+}
+
+.ga-nav-item--active .ga-nav-item-icon {
+  color: #1a73e8;
+}
+
+.ga-nav-item:hover .ga-nav-item-icon {
+  color: #202124;
+}
+
+.ga-nav-item-content {
+  flex: 1;
+  min-width: 0;
+}
+
+.ga-nav-item-title {
+  font-size: 0.8125rem;
+  font-weight: 500;
+  line-height: 1.25;
+}
+
+/* レール（最小化）モード：アイコンのみ・中央配置 */
+.ga-nav-drawer.v-navigation-drawer--rail .ga-nav-item {
+  justify-content: center;
+  padding: 0.5rem;
+  border-radius: 24px;
+  margin-inline: 0.25rem;
+}
+
+.ga-nav-drawer.v-navigation-drawer--rail .ga-nav-item-content {
+  display: none;
+}
+
+.ga-nav-toggle-btn {
+  color: #5f6368 !important;
+  transition: background 0.2s cubic-bezier(0.4, 0, 0.2, 1),
+    color 0.2s cubic-bezier(0.4, 0, 0.2, 1),
+    transform 0.2s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+.ga-nav-toggle-btn:hover {
+  background: rgba(0, 0, 0, 0.06) !important;
+  color: #202124 !important;
+}
+
+.ga-nav-toggle-btn:active {
+  transform: scale(0.92);
+}
+
+.ga-nav-toggle-icon {
+  transition: transform 0.25s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+/* メインラッパー：ナビ幅分のマージンはインラインスタイルで適用 */
+.ga-main-wrapper {
+  flex: 1;
+  min-width: 0;
+  display: flex;
+  flex-direction: column;
 }
 
 /* メインエリア（ヘッダー下に入り込まないよう上余白を確保） */

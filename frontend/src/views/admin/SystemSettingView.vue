@@ -1,5 +1,6 @@
 <template>
   <div class="ga-page">
+    <div class="ga-settings-outer">
     <!-- GA風：ページヘッダー -->
     <header class="ga-page-header">
       <h1 class="ga-page-title">システム設定</h1>
@@ -31,7 +32,6 @@
 
     <v-card
       v-if="form"
-      max-width="960"
       class="ga-card ga-settings-card"
       elevation="0"
     >
@@ -148,6 +148,7 @@
     </v-card>
 
     <v-progress-linear v-else indeterminate />
+    </div>
   </div>
 </template>
 
@@ -192,12 +193,18 @@ async function handleSave() {
   padding-bottom: var(--ga-space-xl);
 }
 
+.ga-settings-outer {
+  max-width: 960px;
+  margin: 0 auto;
+}
+
 .ga-alert {
   margin-bottom: var(--ga-space-md);
 }
 
 .ga-settings-card {
-  margin: var(--ga-space-xl) auto var(--ga-space-xl);
+  width: 100%;
+  margin-bottom: var(--ga-space-xl);
 }
 
 .ga-settings-body {

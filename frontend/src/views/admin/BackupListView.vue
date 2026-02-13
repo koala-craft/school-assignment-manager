@@ -1,47 +1,97 @@
 <template>
-  <div class="content-page">
-    <h1 class="content-page-title">バックアップ管理</h1>
-    <v-alert v-if="loadError" type="error" density="compact" class="content-alert" closable>
-      {{ loadError }}
-    </v-alert>
-    <v-card class="content-card">
-      <v-card-text>
+  <div class="ga-page ga-backup-page">
+    <header class="ga-page-header">
+      <div class="ga-backup-header-inner">
+        <div>
+          <h1 class="ga-page-title">バックアップ管理</h1>
+          <p class="ga-page-subtitle">データベースのバックアップを作成・一覧表示します</p>
+        </div>
         <v-btn
           color="primary"
           :loading="loading"
           @click="createBackup"
-          class="ga-btn-primary mb-4"
+          class="ga-btn-primary"
           prepend-icon="mdi-backup-restore"
         >
           バックアップを作成
         </v-btn>
-        <v-table>
-          <thead>
-            <tr>
-              <th>ID</th>
-              <th>ファイル名</th>
-              <th>サイズ</th>
-              <th>作成日時</th>
-            </tr>
-          </thead>
-          <tbody>
-            <tr v-for="b in items" :key="b.id">
-              <td>{{ b.id }}</td>
-              <td>{{ b.filename }}</td>
-              <td>{{ formatSize(b.size) }}</td>
-              <td>{{ formatDate(b.created_at) }}</td>
-            </tr>
-          </tbody>
-        </v-table>
-        <p v-if="!items.length && !loading" class="text-grey">バックアップはありません</p>
-      </v-card-text>
-    </v-card>
+      </div>
+    </header>
+
+    <v-alert
+      v-if="loadError"
+      type="error"
+      density="compact"
+      class="ga-alert"
+      closable
+    >
+      {{ loadError }}
+    </v-alert>
+
+    <section class="ga-card">
+      <div class="ga-card-header">
+        <h2 class="ga-card-title">バックアップ一覧</h2>
+        <span v-if="items.length > 0" class="ga-card-meta">{{ items.length }}件</span>
+      </div>
+      <div class="ga-card-body">
+        <template v-if="loading && items.length === 0">
+          <div class="ga-modern-table ga-modern-table-loading">
+            <div class="ga-modern-table-header ga-modern-table-cols-4-backup" role="row">
+              <div class="ga-modern-table-cell" role="columnheader">ID</div>
+              <div class="ga-modern-table-cell" role="columnheader">ファイル名</div>
+              <div class="ga-modern-table-cell align-end" role="columnheader">サイズ</div>
+              <div class="ga-modern-table-cell align-end" role="columnheader">作成日時</div>
+            </div>
+            <div class="ga-modern-table-body">
+              <div v-for="i in 3" :key="i" class="ga-modern-table-row ga-modern-table-cols-4-backup ga-modern-table-skeleton">
+                <div class="ga-modern-table-cell"><span class="ga-skeleton" /></div>
+                <div class="ga-modern-table-cell"><span class="ga-skeleton" /></div>
+                <div class="ga-modern-table-cell"><span class="ga-skeleton" /></div>
+                <div class="ga-modern-table-cell"><span class="ga-skeleton" /></div>
+              </div>
+            </div>
+          </div>
+        </template>
+        <template v-else-if="items.length > 0">
+          <div class="ga-modern-table" role="table" aria-label="バックアップ一覧">
+            <div class="ga-modern-table-header ga-modern-table-cols-4-backup" role="row">
+              <div class="ga-modern-table-cell" role="columnheader">ID</div>
+              <div class="ga-modern-table-cell" role="columnheader">ファイル名</div>
+              <div class="ga-modern-table-cell align-end" role="columnheader">サイズ</div>
+              <div class="ga-modern-table-cell align-end" role="columnheader">作成日時</div>
+            </div>
+            <div class="ga-modern-table-body">
+              <div
+                v-for="b in items"
+                :key="b.id"
+                class="ga-modern-table-row ga-modern-table-cols-4-backup"
+                role="row"
+                tabindex="0"
+              >
+                <div class="ga-modern-table-cell ga-cell-brand" role="cell">{{ b.id }}</div>
+                <div class="ga-modern-table-cell" role="cell">
+                  <span class="ga-backup-filename">{{ b.filename }}</span>
+                </div>
+                <div class="ga-modern-table-cell align-end" role="cell">{{ formatSize(b.size) }}</div>
+                <div class="ga-modern-table-cell align-end" role="cell">{{ formatDate(b.created_at) }}</div>
+              </div>
+            </div>
+          </div>
+        </template>
+        <div v-else class="ga-empty">
+          <v-icon size="40" class="ga-empty-icon">mdi-backup-restore</v-icon>
+          <p class="ga-empty-text">バックアップはありません</p>
+          <p class="ga-empty-hint">バックアップを作成ボタンからデータベースのバックアップを作成できます</p>
+        </div>
+      </div>
+    </section>
   </div>
 </template>
 
 <script setup lang="ts">
 import { ref, onMounted } from 'vue'
 import dayjs from 'dayjs'
+import apiClient from '@/api/client'
 import { useBackupsStore, type Backup } from '@/stores/backups'
 
 const items = ref<Backup[]>([])
@@ -76,9 +126,11 @@ async function load(force = false) {
 async function createBackup() {
   loading.value = true
   try {
-    // 新規バックアップ作成後はキャッシュを強制更新
-    await fetch('/admin/system/backup', { method: 'POST' })
+    await apiClient.post('/admin/system/backup')
     await load(true)
+  } catch (e) {
+    loadError.value = (e as Error)?.message ?? 'バックアップの作成に失敗しました'
+    console.error('[BackupListView] createBackup', e)
   } finally {
     loading.value = false
   }
@@ -86,3 +138,37 @@ async function createBackup() {
 
 onMounted(load)
 </script>
+
+<style scoped>
+.ga-page {
+  min-height: 100%;
+  padding-bottom: var(--ga-space-xl);
+}
+
+.ga-backup-header-inner {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  flex-wrap: wrap;
+  gap: var(--ga-space-md);
+}
+
+.ga-alert {
+  margin-bottom: var(--ga-space-md);
+}
+
+.ga-backup-filename {
+  font-family: ui-monospace, 'Cascadia Code', 'Source Code Pro', Menlo, monospace;
+  font-size: 13px;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+@media (max-width: 599px) {
+  .ga-card-header {
+    padding-left: var(--ga-space-md);
+    padding-right: var(--ga-space-md);
+  }
+}
+</style>

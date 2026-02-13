@@ -1,6 +1,11 @@
 <template>
   <div class="ga-page ga-page--glass">
-    <header class="ga-page-header">
+    <div class="ga-settings-outer">
+    <header class="ga-page-header ga-user-edit-header">
+      <router-link to="/admin/users" class="ga-back-link" aria-label="ユーザー一覧に戻る">
+        <v-icon size="20">mdi-arrow-left</v-icon>
+        ユーザー一覧
+      </router-link>
       <h1 class="ga-page-title">ユーザー編集</h1>
       <p class="ga-page-subtitle">
         氏名・メールアドレス・ロール・有効状態などを変更できます。パスワードは変更する場合のみ入力してください。
@@ -29,7 +34,6 @@
 
     <v-card
       v-if="form"
-      max-width="720"
       class="ga-card ga-card--glass ga-user-edit-card"
       elevation="0"
     >
@@ -189,6 +193,7 @@
     </v-card>
 
     <v-progress-linear v-else-if="!loadError" indeterminate />
+    </div>
   </div>
 </template>
 
@@ -284,12 +289,38 @@ async function handleSubmit() {
   padding-bottom: var(--ga-space-xl);
 }
 
+.ga-settings-outer {
+  max-width: 720px;
+  margin: 0 auto;
+}
+
 .ga-alert {
   margin-bottom: var(--ga-space-md);
 }
 
+.ga-back-link {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--ga-space-xs);
+  font-size: 14px;
+  font-weight: 500;
+  color: var(--ga-brand);
+  text-decoration: none;
+  margin-bottom: var(--ga-space-md);
+  transition: var(--ga-transition);
+}
+
+.ga-back-link:hover {
+  color: var(--ga-brand-hover);
+}
+
+.ga-user-edit-header .ga-page-subtitle {
+  margin-top: var(--ga-space-xs);
+}
+
 .ga-user-edit-card {
-  margin: var(--ga-space-xl) auto var(--ga-space-xl);
+  width: 100%;
+  margin-bottom: var(--ga-space-xl);
 }
 
 .ga-user-edit-body {

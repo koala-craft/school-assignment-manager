@@ -18,6 +18,9 @@
   --ga-card-shadow: 0px 1px 2px rgba(0, 0, 0, 0.05);
   --ga-table-header: #F8F9FA;
   --ga-table-hover: #F1F3F4;
+  /* テーブル境界線: Material Design準拠。WCAG 1.4.11 隣接色3:1コントラストを満たす */
+  --ga-table-border: rgba(0, 0, 0, 0.12);
+  --ga-table-border-header: rgba(0, 0, 0, 0.14);
   
   /* スペーシング */
   --ga-space-xs: 4px;
@@ -381,6 +384,295 @@
   box-shadow: var(--ga-focus-ring) !important;
 }
 
+/* Vuetify v-table 背景を白に */
+.v-table {
+  background: #FFFFFF;
+}
+
+/* ===== 管理画面テーブル（学期・年度等で共通） ===== */
+.ga-admin-table-wrap {
+  padding: 0 0 var(--ga-space-lg);
+  overflow: hidden;
+}
+
+.ga-admin-table :deep(.v-table__wrapper) {
+  background: #FFFFFF;
+}
+
+.ga-admin-table :deep(thead tr) {
+  background: var(--ga-table-header);
+}
+
+.ga-admin-table :deep(th) {
+  padding: var(--ga-space-md) var(--ga-space-lg);
+  font-size: 13px;
+  font-weight: 600;
+  color: var(--ga-text);
+  border-bottom: 1px solid var(--ga-table-border-header);
+}
+
+/* 先頭・末尾セルに余白を追加（文字が端に当たらないように） */
+.ga-admin-table :deep(th:first-child),
+.ga-admin-table :deep(td:first-child) {
+  padding-left: calc(var(--ga-space-xl) + var(--ga-space-md));
+}
+
+.ga-admin-table :deep(th:last-child),
+.ga-admin-table :deep(td:last-child) {
+  padding-right: calc(var(--ga-space-xl) + var(--ga-space-md));
+}
+
+/* ゼブラストライプ（Vuetify striped の色を GA デザインで上書き） */
+.ga-admin-table :deep(tbody tr:nth-child(even) td) {
+  background: #FAFAFA !important;
+  background-image: none !important;
+}
+
+.ga-admin-table :deep(tbody tr:nth-child(odd) td) {
+  background: #FFFFFF !important;
+  background-image: none !important;
+}
+
+.ga-admin-table :deep(td) {
+  padding: var(--ga-space-md) var(--ga-space-lg);
+  font-size: 14px;
+  color: var(--ga-text);
+  border-bottom: 1px solid var(--ga-table-border);
+  transition: background var(--ga-transition);
+}
+
+/* ホバー時の背景（行全体を横幅いっぱいにカバー） */
+.ga-admin-table :deep(tbody tr:hover td::after) {
+  background: var(--ga-table-hover) !important;
+  left: 0 !important;
+  right: 0 !important;
+  width: 100% !important;
+  margin: 0 !important;
+  box-sizing: border-box !important;
+}
+
+.ga-admin-table :deep(tbody tr:hover td) {
+  background: var(--ga-table-hover) !important;
+}
+
+.ga-admin-table :deep(tbody tr:last-child td) {
+  border-bottom: none;
+}
+
+/* ===== モダンテーブル（2026年デザインパターン） =====
+   - ボーダーレス・カード風行
+   - 角丸・行間ギャップ
+   - 数値右寄せ・16dp/32dp列間余白
+   - 150msホバートランジション
+   ================================================ */
+.ga-modern-table {
+  display: flex;
+  flex-direction: column;
+  gap: var(--ga-space-sm);
+  padding: 0 var(--ga-space-lg) var(--ga-space-lg);
+}
+
+.ga-modern-table-header {
+  display: grid;
+  grid-template-columns: 80px 1fr 110px 110px 90px 1fr;
+  gap: var(--ga-space-md);
+  min-height: 44px;
+  padding: var(--ga-space-md) var(--ga-space-lg);
+  align-items: center;
+  font-size: 12px;
+  font-weight: 600;
+  color: var(--ga-text-secondary);
+  text-transform: uppercase;
+  letter-spacing: 0.04em;
+  border-bottom: 1px solid var(--ga-table-border);
+}
+
+.ga-modern-table-header.ga-modern-table-cols-4 {
+  grid-template-columns: 80px 1fr 110px 110px;
+}
+
+.ga-modern-table-header.ga-modern-table-cols-4-backup {
+  grid-template-columns: 60px 1fr 90px 150px;
+}
+
+.ga-modern-table-header.ga-modern-table-cols-5 {
+  grid-template-columns: 60px 100px 100px 1fr 150px;
+}
+
+.ga-modern-table-header.ga-modern-table-cols-6 {
+  grid-template-columns: 80px 1fr 110px 110px 90px 1fr;
+}
+
+.ga-modern-table-body {
+  display: flex;
+  flex-direction: column;
+  gap: var(--ga-space-sm);
+}
+
+.ga-modern-table-row {
+  display: grid;
+  grid-template-columns: 80px 1fr 110px 110px 90px 1fr;
+  gap: var(--ga-space-md);
+  align-items: center;
+  min-height: 52px;
+  padding: var(--ga-space-md) var(--ga-space-lg);
+  font-size: 14px;
+  color: var(--ga-text);
+  background: #FFFFFF;
+  border-radius: var(--ga-radius-sm);
+  border: 1px solid transparent;
+  transition: background 0.15s ease, border-color 0.15s ease, box-shadow 0.15s ease;
+}
+
+.ga-modern-table-row.ga-modern-table-cols-4 {
+  grid-template-columns: 80px 1fr 110px 110px;
+}
+
+.ga-modern-table-row.ga-modern-table-cols-4-backup {
+  grid-template-columns: 60px 1fr 90px 150px;
+}
+
+.ga-modern-table-row.ga-modern-table-cols-5 {
+  grid-template-columns: 60px 100px 100px 1fr 150px;
+}
+
+.ga-modern-table-row.ga-modern-table-cols-6 {
+  grid-template-columns: 80px 1fr 110px 110px 90px 1fr;
+}
+
+.ga-modern-table-row:nth-child(even) {
+  background: #FAFAFA;
+}
+
+.ga-modern-table-row:hover {
+  background: var(--ga-table-hover) !important;
+  border-color: rgba(0, 0, 0, 0.06);
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.04);
+}
+
+.ga-modern-table-cell {
+  min-width: 0;
+}
+
+.ga-modern-table-cell.align-end {
+  text-align: right;
+}
+
+.ga-modern-table-cell.ga-cell-actions {
+  display: flex;
+  justify-content: flex-end;
+}
+
+/* 操作ボタン: タッチターゲット最小44px確保 */
+.ga-modern-table-cell.ga-cell-actions .v-btn {
+  min-height: 44px;
+  min-width: 44px;
+  padding: 0 var(--ga-space-md);
+}
+
+/* クリック可能な行（年度の有効化） */
+.ga-modern-table-row.ga-row-clickable {
+  cursor: pointer;
+}
+
+/* 現在の年度（有効）: 視覚的強調 */
+.ga-modern-table-row.ga-row-active {
+  border-left: 3px solid var(--ga-brand);
+  background: var(--ga-brand-light) !important;
+}
+
+.ga-modern-table-row.ga-row-active:nth-child(even) {
+  background: #E8F0FE !important;
+}
+
+.ga-modern-table-row.ga-row-active:hover {
+  background: #D2E3FC !important;
+}
+
+/* 行フォーカス（キーボード操作） */
+.ga-modern-table-row:focus-visible {
+  outline: none;
+  box-shadow: var(--ga-focus-ring);
+}
+
+/* スケルトンローディング */
+.ga-modern-table-skeleton {
+  pointer-events: none;
+}
+
+.ga-modern-table-skeleton .ga-skeleton {
+  display: inline-block;
+  height: 14px;
+  min-width: 60px;
+  max-width: 100%;
+  background: linear-gradient(
+    90deg,
+    #E8E8E8 25%,
+    #F5F5F5 50%,
+    #E8E8E8 75%
+  );
+  background-size: 200% 100%;
+  animation: ga-skeleton-shimmer 1.5s ease-in-out infinite;
+  border-radius: 4px;
+}
+
+@keyframes ga-skeleton-shimmer {
+  0% { background-position: 200% 0; }
+  100% { background-position: -200% 0; }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .ga-modern-table-skeleton .ga-skeleton {
+    animation: none;
+    background: #E8E8E8;
+  }
+}
+
+@media (max-width: 599px) {
+  .ga-modern-table {
+    padding-left: var(--ga-space-md);
+    padding-right: var(--ga-space-md);
+  }
+
+  .ga-modern-table-header,
+  .ga-modern-table-row {
+    grid-template-columns: 60px 1fr 90px 90px;
+    gap: var(--ga-space-sm);
+    padding-left: var(--ga-space-md);
+    padding-right: var(--ga-space-md);
+  }
+
+  .ga-modern-table-header.ga-modern-table-cols-6,
+  .ga-modern-table-row.ga-modern-table-cols-6 {
+    grid-template-columns: 56px 1fr 90px 90px 80px 1fr;
+  }
+
+  .ga-modern-table-header.ga-modern-table-cols-4,
+  .ga-modern-table-row.ga-modern-table-cols-4 {
+    grid-template-columns: 60px 1fr 90px 90px;
+  }
+
+  .ga-modern-table-header.ga-modern-table-cols-4-backup,
+  .ga-modern-table-row.ga-modern-table-cols-4-backup {
+    grid-template-columns: 50px 1fr 70px 120px;
+  }
+
+  .ga-modern-table-header.ga-modern-table-cols-5,
+  .ga-modern-table-row.ga-modern-table-cols-5 {
+    grid-template-columns: 50px 80px 80px 1fr 120px;
+  }
+}
+
+.ga-modern-table-cell strong {
+  font-weight: 600;
+  color: var(--ga-text);
+}
+
+.ga-modern-table-cell.ga-cell-brand {
+  font-weight: 600;
+  color: var(--ga-brand);
+}
+
 /* Vuetifyボタンのオーバーライド */
 .ga-btn-primary :deep(.v-btn__content),
 .ga-btn-secondary :deep(.v-btn__content),
@@ -388,6 +680,84 @@
   display: inline-flex;
   align-items: center;
   gap: var(--ga-space-xs);
+}
+
+/* ===== モーダル（学期作成・年度作成等） ===== */
+.ga-dialog-card {
+  border-radius: var(--ga-radius);
+  box-shadow: 0 8px 32px rgba(0, 0, 0, 0.12);
+  overflow: hidden;
+}
+
+.ga-dialog-card .ga-dialog-header {
+  padding: var(--ga-space-lg);
+  padding-bottom: var(--ga-space-md);
+  border-bottom: 1px solid var(--ga-card-border);
+}
+
+.ga-dialog-card .ga-dialog-title {
+  margin: 0;
+  font-size: 20px;
+  font-weight: 600;
+  line-height: 1.3;
+  color: var(--ga-text);
+}
+
+.ga-dialog-card .ga-dialog-body {
+  padding: var(--ga-space-lg);
+}
+
+.ga-dialog-form {
+  display: flex;
+  flex-direction: column;
+  gap: var(--ga-space-lg);
+}
+
+.ga-dialog-field {
+  width: 100%;
+}
+
+.ga-dialog-field :deep(.v-field) {
+  border-radius: var(--ga-radius-sm);
+}
+
+/* 学期作成モーダル：年度ドロップダウンメニュー（FAQカテゴリと同一・テレポート先でグローバル） */
+.ga-term-year-menu {
+  border-radius: var(--ga-radius-sm) !important;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.12) !important;
+  border: 1px solid var(--ga-card-border) !important;
+  padding: 4px 0 !important;
+  max-height: 320px !important;
+}
+
+.ga-term-year-menu .v-list-item {
+  min-height: 40px !important;
+  font-size: 14px !important;
+  line-height: 1.5 !important;
+  color: var(--ga-text) !important;
+  padding-inline: 16px !important;
+}
+
+.ga-term-year-menu .v-list-item:hover {
+  background: var(--ga-table-hover) !important;
+}
+
+.ga-term-year-menu .v-list-item--active {
+  background: var(--ga-brand-light) !important;
+  color: var(--ga-brand) !important;
+}
+
+.ga-term-year-menu .v-list-item--active:hover {
+  background: #D2E3FC !important;
+}
+
+.ga-dialog-card .ga-dialog-actions {
+  display: flex;
+  justify-content: flex-end;
+  gap: var(--ga-space-md);
+  padding: var(--ga-space-md) var(--ga-space-lg);
+  border-top: 1px solid var(--ga-card-border);
+  flex-wrap: wrap;
 }
 
 /* ===== ドロップダウン（FAQカテゴリ等と共通構成） ===== */

@@ -51,6 +51,7 @@ const router = createRouter({
         { path: 'admin/import', component: () => import('@/views/admin/ImportView.vue'), meta: { admin: true } },
         // Teacher
         { path: 'teacher/dashboard', component: () => import('@/views/teacher/DashboardView.vue'), meta: { teacher: true } },
+        { path: 'teacher/grading', name: 'teacher-grading', component: () => import('@/views/teacher/GradingView.vue'), meta: { teacher: true } },
         { path: 'teacher/subjects', component: () => import('@/views/teacher/subjects/SubjectListView.vue'), meta: { teacher: true } },
         { path: 'teacher/subjects/create', component: () => import('@/views/teacher/subjects/SubjectCreateView.vue'), meta: { teacher: true } },
         { path: 'teacher/subjects/:id/edit', component: () => import('@/views/teacher/subjects/SubjectEditView.vue'), meta: { teacher: true } },
@@ -59,7 +60,6 @@ const router = createRouter({
         { path: 'teacher/assignments/create', component: () => import('@/views/teacher/assignments/AssignmentCreateView.vue'), meta: { teacher: true } },
         { path: 'teacher/assignments/:id/edit', component: () => import('@/views/teacher/assignments/AssignmentEditView.vue'), meta: { teacher: true } },
         { path: 'teacher/assignments/:id/submissions', component: () => import('@/views/teacher/submissions/SubmissionMatrixView.vue'), meta: { teacher: true } },
-        { path: 'teacher/grading', component: () => import('@/views/teacher/GradingView.vue'), meta: { teacher: true } },
         { path: 'teacher/students/:id/submissions', component: () => import('@/views/teacher/students/StudentSubmissionView.vue'), meta: { teacher: true } },
         { path: 'teacher/templates', component: () => import('@/views/teacher/templates/TemplateListView.vue'), meta: { teacher: true } },
         { path: 'teacher/templates/create', component: () => import('@/views/teacher/templates/TemplateCreateView.vue'), meta: { teacher: true } },
